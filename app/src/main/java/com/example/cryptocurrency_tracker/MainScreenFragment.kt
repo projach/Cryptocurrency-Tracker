@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.example.cryptocurrency_tracker.databinding.FragmentMainScreenBinding
 import com.example.cryptocurrency_tracker.network.JsonResponse
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
@@ -34,15 +36,22 @@ class MainScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val client = HttpClient(CIO)
         val url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&x-cg-demo-api-key=CG-HZhV6p1qKCxRn78hoUoky7aj"
+        val imageV: ImageView? = binding?.mainImagePicasso
+        var jsonResponse: Array<JsonResponse>
+
         runBlocking {
             val response =
                 client.get(url)
             Log.d("RESPONSE", response.bodyAsText())
 
-            val jsonResponse =
+            jsonResponse =
                 Gson().fromJson(response.bodyAsText(), Array<JsonResponse>::class.java)
             Log.d("RESPONSE JSON", jsonResponse.joinToString { it.toString() })
         }
+
+        Picasso.get().load(jsonResponse.get(0).image).into(imageV)
+
+
     }
 
     companion object {

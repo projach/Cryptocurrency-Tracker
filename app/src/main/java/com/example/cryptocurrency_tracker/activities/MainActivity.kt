@@ -19,14 +19,11 @@ class MainActivity : AppCompatActivity() {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
         val fragmentContainer: FragmentContainerView? = binding?.mainFragmentContainer
-        fragmentDisplay(MainScreenFragment(),fragmentContainer)
-    }
-
-    private fun fragmentDisplay(fragment: MainScreenFragment, fragmentContainer: FragmentContainerView?) {
         if (fragmentContainer != null) {
             val fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(fragmentContainer.id, fragment)
+            fragmentTransaction.replace(fragmentContainer.id, MainScreenFragment())
             fragmentTransaction.commit()
         }
     }
+
 }

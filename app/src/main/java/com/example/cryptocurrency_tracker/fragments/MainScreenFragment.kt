@@ -32,17 +32,27 @@ class MainScreenFragment : Fragment() {
 
         val networking = Networking()
 
-        networking.isNetworkAvailable(context)
-
-        val coins = networking.makeCall(coinsUrl)
-        var jsonView: Array<JsonView>
-        runBlocking { jsonView = Gson().fromJson(coins.bodyAsText(), Array<JsonView>::class.java) }
-        Log.d("JSON ARRAY SIZE", jsonView.size.toString())
-        val mContext = context
-        if(mContext != null){
-            binding.recyclerView.adapter = RecyclerViewAdapter(jsonView,makeIDs(jsonView.size))
+        if(networking.isNetworkAvailable(context)) {
+            val coins = networking.makeCall(coinsUrl)
+            var jsonView: Array<JsonView>
+            runBlocking {
+                jsonView = Gson().fromJson(coins.bodyAsText(), Array<JsonView>::class.java)
+            }
+            Log.d("JSON ARRAY SIZE", jsonView.size.toString())
+            val mContext = context
+            if (mContext != null) {
+                binding.recyclerView.adapter = RecyclerViewAdapter(jsonView, makeIDs(jsonView.size))
+            }
+        }else{
+            binding.mainScreenRefresh.visibility = View.VISIBLE
+//            TODO("take the data from database")
+            binding.mainScreenRefresh.setOnClickListener{
+                if (networking.isNetworkAvailable(context)){
+                    binding.mainScreenRefresh.visibility = View.INVISIBLE
+//                    TODO("Make a method that does the api call and populates the data")
+                }
+            }
         }
-
     }
 
     private fun makeIDs(size:Int): List<Int> {
@@ -50,7 +60,6 @@ class MainScreenFragment : Fragment() {
         (1..size).forEach {
             arrayData.add(it)
         }
-
         return arrayData
     }
 }

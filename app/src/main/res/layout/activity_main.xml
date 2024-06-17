@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity">
+    tools:context=".activities.MainActivity"
+    android:background="@color/black">
 
 
     <Button
@@ -40,6 +41,15 @@
         app:layout_constraintLeft_toRightOf="@id/main_button_popular"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="3dp"
+        android:background="@color/gray"
+        app:layout_constraintTop_toBottomOf="@id/main_button_search"
+        app:layout_constraintBottom_toTopOf="@id/main_fragment_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_fragment_container"

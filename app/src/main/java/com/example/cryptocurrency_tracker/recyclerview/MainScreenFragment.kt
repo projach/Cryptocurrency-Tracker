@@ -38,18 +38,18 @@ class MainScreenFragment : Fragment() {
         val coins = networking.makeCall(coinsUrl)
         var jsonView: Array<JsonView>
         runBlocking { jsonView = Gson().fromJson(coins.bodyAsText(), Array<JsonView>::class.java) }
-        Log.d("JSON ARRAY", jsonView[0].toString())
+        Log.d("JSON ARRAY SIZE", jsonView.size.toString())
         val mContext = context
         if(mContext != null){
-            binding.recyclerView.adapter = RecyclerViewAdapter(jsonView)
+            binding.recyclerView.adapter = RecyclerViewAdapter(jsonView,makeIDs(jsonView.size))
         }
 
     }
 
-    private fun getArrayData(): List<String> {
-        val arrayData = mutableListOf<String>()
-        (10..1000).forEach {
-            arrayData.add(it.toString())
+    private fun makeIDs(size:Int): List<Int> {
+        val arrayData = mutableListOf<Int>()
+        (1..size).forEach {
+            arrayData.add(it)
         }
 
         return arrayData

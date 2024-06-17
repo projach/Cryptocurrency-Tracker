@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptocurrency_tracker.databinding.CoinViewBinding
 import com.example.cryptocurrency_tracker.network.JsonView
 
-class RecyclerViewAdapter(private val arrayData: Array<JsonView>) : RecyclerView.Adapter<RecyclerViewHolder>() {
+class RecyclerViewAdapter(private val arrayData: Array<JsonView>,private val arrayID: List<Int>) : RecyclerView.Adapter<RecyclerViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         val view =
             CoinViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -17,6 +17,6 @@ class RecyclerViewAdapter(private val arrayData: Array<JsonView>) : RecyclerView
     override fun getItemCount(): Int = arrayData.size
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-        holder.bind(arrayData[position])
+        holder.bind(arrayData[position], arrayID[position])
     }
 }

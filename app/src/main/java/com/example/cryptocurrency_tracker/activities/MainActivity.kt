@@ -1,10 +1,10 @@
-package com.example.cryptocurrency_tracker
+package com.example.cryptocurrency_tracker.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
 import com.example.cryptocurrency_tracker.databinding.ActivityMainBinding
-import com.example.cryptocurrency_tracker.recyclerview.MainScreenFragment
+import com.example.cryptocurrency_tracker.fragments.MainScreenFragment
 
 class MainActivity : AppCompatActivity() {
 

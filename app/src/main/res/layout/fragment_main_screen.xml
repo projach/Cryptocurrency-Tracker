@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainScreenFragment">
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".recyclerview.MainScreenFragment">
 
-    <!-- Just a try for picasso -->
-    <ImageView
-        android:id="@+id/main_image_picasso"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+   <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/recycler_view"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical"
+       app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+       tools:itemCount="8"
+       tools:listitem="@layout/coin_view"/>
 
-</FrameLayout>
+</LinearLayout>

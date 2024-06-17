@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
 import com.example.cryptocurrency_tracker.databinding.ActivityMainBinding
+import com.example.cryptocurrency_tracker.recyclerview.MainScreenFragment
 
 class MainActivity : AppCompatActivity() {
 

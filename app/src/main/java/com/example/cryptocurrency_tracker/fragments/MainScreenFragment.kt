@@ -41,7 +41,7 @@ class MainScreenFragment : Fragment() {
             Log.d("JSON ARRAY SIZE", jsonView.size.toString())
             val mContext = context
             if (mContext != null) {
-                binding.recyclerView.adapter = RecyclerViewAdapter(jsonView, makeIDs(jsonView.size))
+                binding.recyclerView.adapter = RecyclerViewAdapter(jsonView, makeIDs(jsonView.size), MainScreenFragment())
             }
         }else{
             binding.mainScreenRefresh.visibility = View.VISIBLE

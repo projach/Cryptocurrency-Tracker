@@ -2,6 +2,7 @@ package com.example.cryptocurrency_tracker.recyclerview
 
 import android.util.Log
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptocurrency_tracker.databinding.CoinViewBinding
@@ -10,7 +11,7 @@ import com.example.cryptocurrency_tracker.network.JsonView
 import com.squareup.picasso.Picasso
 
 class RecyclerViewHolder(val binding: CoinViewBinding): RecyclerView.ViewHolder(binding.root) {
-    fun bind(data: JsonView, id:Int){
+    fun bind(data: JsonView, id:Int, fragment: Fragment){
         val imageV: ImageView = binding.viewImageCoin
         Picasso.get().load(data.image).into(imageV)
         binding.viewTextPrice.text = data.currentPrice.toString().plus("€")

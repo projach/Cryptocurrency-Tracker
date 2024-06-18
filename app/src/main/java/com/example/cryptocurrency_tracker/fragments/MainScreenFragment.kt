@@ -55,6 +55,10 @@ class MainScreenFragment : Fragment() {
         }
     }
 
+    private fun apiCall(){
+
+    }
+
     private fun makeIDs(size:Int): List<Int> {
         val arrayData = mutableListOf<Int>()
         (1..size).forEach {

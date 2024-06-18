@@ -17,7 +17,7 @@ class RecyclerViewHolder(val binding: CoinViewBinding): RecyclerView.ViewHolder(
         binding.viewTextId.text = id.toString()
         binding.viewTextSymbol.text = data.symbol
         binding.constraintLayoutCoin.setOnClickListener{
-            TODO("Add button functionality to send over to details")
+//            TODO("Add button functionality to send over to details")
         }
     }
 }

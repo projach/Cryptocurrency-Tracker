@@ -1,8 +1,7 @@
 package com.example.cryptocurrency_tracker.database
 
-
-import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
 
 @Entity

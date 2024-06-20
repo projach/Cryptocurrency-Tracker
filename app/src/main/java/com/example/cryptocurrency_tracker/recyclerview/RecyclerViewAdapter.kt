@@ -1,11 +1,11 @@
 package com.example.cryptocurrency_tracker.recyclerview
 
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cryptocurrency_tracker.databinding.CoinViewBinding
 import com.example.cryptocurrency_tracker.network.JsonView
+import com.example.cryptocurrency_tracker.databinding.CoinViewBinding
 
 class RecyclerViewAdapter(private val arrayData: Array<JsonView>,private val arrayID: List<Int>) : RecyclerView.Adapter<RecyclerViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {

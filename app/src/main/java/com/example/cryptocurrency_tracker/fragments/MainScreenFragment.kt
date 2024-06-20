@@ -2,17 +2,17 @@ package com.example.cryptocurrency_tracker.fragments
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
+import com.google.gson.Gson
 import android.view.ViewGroup
-import com.example.cryptocurrency_tracker.databinding.FragmentMainScreenBinding
+import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
+import kotlinx.coroutines.runBlocking
+import io.ktor.client.statement.bodyAsText
 import com.example.cryptocurrency_tracker.network.JsonView
 import com.example.cryptocurrency_tracker.network.Networking
 import com.example.cryptocurrency_tracker.recyclerview.RecyclerViewAdapter
-import com.google.gson.Gson
-import io.ktor.client.statement.bodyAsText
-import kotlinx.coroutines.runBlocking
+import com.example.cryptocurrency_tracker.databinding.FragmentMainScreenBinding
 
 class MainScreenFragment : Fragment() {
     private lateinit var binding: FragmentMainScreenBinding
@@ -45,11 +45,11 @@ class MainScreenFragment : Fragment() {
             }
         }else{
             binding.mainScreenRefresh.visibility = View.VISIBLE
-//            TODO("take the data from database")
+//          TODO("take the data from database")
             binding.mainScreenRefresh.setOnClickListener{
                 if (networking.isNetworkAvailable(context)){
                     binding.mainScreenRefresh.visibility = View.INVISIBLE
-//                    TODO("Make a method that does the api call and populates the data")
+//                  TODO("Make a method that does the api call and populates the data")
                 }
             }
         }

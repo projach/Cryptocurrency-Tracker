@@ -12,7 +12,7 @@ import com.example.cryptocurrency_tracker.network.JsonView
 import com.squareup.picasso.Picasso
 
 class RecyclerViewHolder(val binding: CoinViewBinding): RecyclerView.ViewHolder(binding.root) {
-    fun bind(data: UserEntity, fragment: Fragment){
+    fun bind(data: UserEntity){
         val imageV: ImageView = binding.viewImageCoin
         Picasso.get().load(data.image).into(imageV)
         binding.viewTextPrice.text = data.currentPrice.toString().plus("€")

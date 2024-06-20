@@ -14,12 +14,18 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun save(data:UserEntity)
 
+    @Query("UPDATE UserEntity SET current_price = :price WHERE name = :name")
+    fun updateData(price: Double, name:String)
+
     @Delete
     fun delete(data: UserEntity)
 
-    @Query("SELECT * FROM UserEntity")
+    @Query("DELETE FROM UserEntity")
+    fun deleteAll()
+
+    @Query("SELECT * FROM UserEntity ORDER BY id ASC")
     fun readAll() : List<UserEntity>
 
-    @Query("SELECT * FROM UserEntity WHERE favourite = 'true'")
-    fun readFavourites() : List<UserEntity>
+    @Query("SELECT * FROM UserEntity WHERE favourite = 1")
+    fun favourites() : List<UserEntity>
 }

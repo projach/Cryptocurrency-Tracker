@@ -1,14 +1,9 @@
 package com.example.cryptocurrency_tracker.recyclerview
 
-import android.util.Log
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptocurrency_tracker.database.UserEntity
 import com.example.cryptocurrency_tracker.databinding.CoinViewBinding
-import com.example.cryptocurrency_tracker.fragments.MainScreenFragment
-import com.example.cryptocurrency_tracker.network.JsonView
 import com.squareup.picasso.Picasso
 
 class RecyclerViewHolder(val binding: CoinViewBinding): RecyclerView.ViewHolder(binding.root) {

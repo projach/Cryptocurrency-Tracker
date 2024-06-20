@@ -35,25 +35,42 @@ class MainScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val networking = Networking()
+
         if (networking.isNetworkAvailable(context)) {
-            val data = takeData(networking, coinsUrl)
-            saveDatabase(data)
-            binding.recyclerView.adapter =
-                RecyclerViewAdapter(data, makeIDs(data.size), MainScreenFragment())
+            showUIOnline()
         } else {
             binding.mainScreenRefresh.visibility = View.VISIBLE
-//            TODO("take the data from database")
+            val databaseData = getDatabase()
+            if (databaseData != null){
+                binding.recyclerView.adapter =
+                    RecyclerViewAdapter(
+                        databaseData,
+                        MainScreenFragment()
+                    )
+            }
             binding.mainScreenRefresh.setOnClickListener {
                 if (networking.isNetworkAvailable(context)) {
                     binding.mainScreenRefresh.visibility = View.INVISIBLE
-                    val data = takeData(networking, coinsUrl)
-                    saveDatabase(data)
-                    binding.recyclerView.adapter =
-                        RecyclerViewAdapter(data, makeIDs(data.size), MainScreenFragment())
+                    showUIOnline()
                 }
             }
         }
     }
+
+    private fun showUIOnline(){
+        val data = takeData(Networking(), coinsUrl)
+        saveDatabase(data)
+        val databaseData = getDatabase()
+        if (databaseData != null) {
+            binding.recyclerView.adapter =
+                RecyclerViewAdapter(
+                    databaseData,
+                    MainScreenFragment()
+                )
+        }
+
+    }
+
 
     private fun takeData(networking: Networking, url: String): Array<JsonView>{
         val coins = networking.makeCall(url)
@@ -71,16 +88,20 @@ class MainScreenFragment : Fragment() {
             val database =
                 Room.databaseBuilder(ctx, DatabaseInstance::class.java, "UserDatabase")
                     .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
                     .build()
 
-
-            database.getUserDao().deleteAll()
-
-            var id = 0
-
-            data.forEach {
-                id++
-                database.getUserDao().save(UserEntity(id,it.name,it.symbol,it.image,it.currentPrice,false))
+            if (database.getUserDao().readAll().isEmpty()) {
+                var id = 0
+                data.forEach {
+                    id++
+                    database.getUserDao()
+                        .save(UserEntity(id, it.name, it.symbol, it.image, it.currentPrice, false))
+                }
+            }else{
+                data.forEach {
+                    database.getUserDao().updateData(it.currentPrice, it.name)
+                }
             }
         }
     }
@@ -104,11 +125,4 @@ class MainScreenFragment : Fragment() {
         return null
     }
 
-    private fun makeIDs(size:Int): List<Int> {
-        val arrayData = mutableListOf<Int>()
-        (1..size).forEach {
-            arrayData.add(it)
-        }
-        return arrayData
-    }
 }

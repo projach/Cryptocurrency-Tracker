@@ -14,8 +14,8 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun save(data:UserEntity)
 
-    @Query("UPDATE UserEntity SET current_price = :price WHERE id = :id")
-    fun updateData(price: Double, id:Int)
+    @Query("UPDATE UserEntity SET current_price = :price WHERE name = :name")
+    fun updateData(price: Double, name:String)
 
     @Delete
     fun delete(data: UserEntity)

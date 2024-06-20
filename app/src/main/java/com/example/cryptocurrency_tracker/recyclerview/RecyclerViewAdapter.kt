@@ -5,8 +5,12 @@ import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptocurrency_tracker.database.UserEntity
 import com.example.cryptocurrency_tracker.databinding.CoinViewBinding
+import com.example.cryptocurrency_tracker.fragments.MainScreenFragment
 
-class RecyclerViewAdapter(private val arrayData: List<UserEntity>) : RecyclerView.Adapter<RecyclerViewHolder>() {
+class RecyclerViewAdapter(
+    private val arrayData: List<UserEntity>,
+    mainScreenFragment: MainScreenFragment
+) : RecyclerView.Adapter<RecyclerViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         val view =
             CoinViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)

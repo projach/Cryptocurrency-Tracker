@@ -1,13 +1,13 @@
 package com.example.cryptocurrency_tracker.database
 
 import androidx.room.Dao
+import kotlin.jvm.Throws
+import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.OnConflictStrategy
-import androidx.room.Update
-import kotlin.jvm.Throws
 import android.database.SQLException
+import androidx.room.OnConflictStrategy
 
 @Dao
 interface UserDao {

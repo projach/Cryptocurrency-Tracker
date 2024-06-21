@@ -1,20 +1,20 @@
 package com.example.cryptocurrency_tracker.fragments
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.os.Bundle
 import androidx.room.Room
-import com.example.cryptocurrency_tracker.database.DatabaseInstance
-import com.example.cryptocurrency_tracker.database.UserEntity
-import com.example.cryptocurrency_tracker.databinding.FragmentMainScreenBinding
-import com.example.cryptocurrency_tracker.network.JsonView
-import com.example.cryptocurrency_tracker.network.Networking
-import com.example.cryptocurrency_tracker.recyclerview.RecyclerViewAdapter
 import com.google.gson.Gson
-import io.ktor.client.statement.bodyAsText
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
 import kotlinx.coroutines.runBlocking
+import io.ktor.client.statement.bodyAsText
+import com.example.cryptocurrency_tracker.database.UserEntity
+import com.example.cryptocurrency_tracker.network.Networking
+import com.example.cryptocurrency_tracker.database.DatabaseInstance
+import com.example.cryptocurrency_tracker.network.PopularJsonResponse
+import com.example.cryptocurrency_tracker.recyclerview.RecyclerViewAdapter
+import com.example.cryptocurrency_tracker.databinding.FragmentMainScreenBinding
 
 class MainScreenFragment : Fragment() {
     private lateinit var binding: FragmentMainScreenBinding
@@ -39,7 +39,7 @@ class MainScreenFragment : Fragment() {
         } else {
             binding.mainScreenRefresh.visibility = View.VISIBLE
             val databaseData = getDatabase()
-            if (databaseData != null){
+            if (databaseData != null) {
                 binding.recyclerView.adapter =
                     RecyclerViewAdapter(
                         databaseData,
@@ -55,7 +55,7 @@ class MainScreenFragment : Fragment() {
         }
     }
 
-    private fun showUIOnline(){
+    private fun showUIOnline() {
         val data = takeData(Networking(), coinsUrl)
         saveDatabase(data)
         val databaseData = getDatabase()
@@ -66,29 +66,28 @@ class MainScreenFragment : Fragment() {
                     MainScreenFragment()
                 )
         }
-
     }
 
-
-    private fun takeData(networking: Networking, url: String): Array<JsonView>{
+    // TODO: popular or home ?
+    private fun takeData(networking: Networking, url: String): Array<PopularJsonResponse> {
         val coins = networking.makeCall(url)
-        var jsonView: Array<JsonView>
+        var popularJsonResponse: Array<PopularJsonResponse>
         runBlocking {
-            jsonView = Gson().fromJson(coins.bodyAsText(), Array<JsonView>::class.java)
+            popularJsonResponse =
+                Gson().fromJson(coins.bodyAsText(), Array<PopularJsonResponse>::class.java)
         }
-        return jsonView
+        return popularJsonResponse
     }
 
-    //deletes all of the database and populates again with the new request
-    private fun saveDatabase(data: Array<JsonView>){
+    // deletes everything in the database and populates it again with the new request
+    private fun saveDatabase(data: Array<PopularJsonResponse>) {
         val ctx = context
-        if(ctx != null) {
+        if (ctx != null) {
             val database =
                 Room.databaseBuilder(ctx, DatabaseInstance::class.java, "UserDatabase")
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build()
-
             if (database.getUserDao().readAll().isEmpty()) {
                 var id = 0
                 data.forEach {
@@ -96,7 +95,7 @@ class MainScreenFragment : Fragment() {
                     database.getUserDao()
                         .save(UserEntity(id, it.name, it.symbol, it.image, it.currentPrice, false))
                 }
-            }else{
+            } else {
                 data.forEach {
                     database.getUserDao().updateData(it.currentPrice, it.name)
                 }
@@ -104,9 +103,9 @@ class MainScreenFragment : Fragment() {
         }
     }
 
-    private fun getDatabase(): List<UserEntity>?{
+    private fun getDatabase(): List<UserEntity>? {
         val ctx = context
-        if(ctx != null) {
+        if (ctx != null) {
             val database =
                 Room.databaseBuilder(ctx, DatabaseInstance::class.java, "UserDatabase")
                     .allowMainThreadQueries()
@@ -114,13 +113,17 @@ class MainScreenFragment : Fragment() {
 
             val data = database.getUserDao().readAll()
 
-            if (data.isEmpty()){
+            if (data.isEmpty()) {
                 return null
-            }else{
+            } else {
                 return data
             }
         }
         return null
     }
 
+    companion object {
+        @JvmStatic
+        fun newInstance() = MainScreenFragment()
+    }
 }

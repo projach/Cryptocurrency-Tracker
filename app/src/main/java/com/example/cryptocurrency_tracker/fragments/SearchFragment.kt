@@ -21,6 +21,11 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = SearchFragment()
+    }
 }
 
 // val client = OkHttpClient()
@@ -35,3 +40,4 @@ class SearchFragment : Fragment() {
 
 // TODO: search by name & symbol
 // TODO: display search results in a list
+// TODO: mark or unmark as favourite from search & popular fragments ! - extra -

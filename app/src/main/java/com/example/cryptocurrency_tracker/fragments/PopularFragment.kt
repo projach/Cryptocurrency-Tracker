@@ -5,16 +5,16 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
-import com.example.cryptocurrency_tracker.databinding.FragmentFavouritesBinding
+import com.example.cryptocurrency_tracker.databinding.FragmentPopularBinding
 
-class FavouritesFragment : Fragment() {
-    private lateinit var binding: FragmentFavouritesBinding
+class PopularFragment : Fragment() {
+    private lateinit var binding: FragmentPopularBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentFavouritesBinding.inflate(layoutInflater)
+        binding = FragmentPopularBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -24,8 +24,10 @@ class FavouritesFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = FavouritesFragment()
+        fun newInstance() = PopularFragment()
     }
 }
 
-// TODO: display favourites in a list
+
+// TODO: each cryptocurrency item should display its name, symbol, current price and price change
+// TODO: mark or unmark as favourite from search & popular fragments ! - extra -

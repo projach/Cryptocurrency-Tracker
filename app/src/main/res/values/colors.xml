@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#141414</color>
+    <color name="black">#000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="gray">#A19E9E</color>
+    <color name="gray">#DFDCDC</color>
+    <color name="tabSelectedIndicator">#FFFFFF</color>
+    <color name="tabSelectedTextColor">#FFFFFF</color>
+    <color name="tabUnselectedTextColor">#EFEDED</color>
 </resources>

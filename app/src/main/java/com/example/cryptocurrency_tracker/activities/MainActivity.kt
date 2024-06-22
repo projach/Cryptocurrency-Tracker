@@ -1,29 +1,31 @@
 package com.example.cryptocurrency_tracker.activities
 
 import android.os.Bundle
+import androidx.viewpager2.widget.ViewPager2
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentContainerView
-import com.example.cryptocurrency_tracker.fragments.MainScreenFragment
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.example.cryptocurrency_tracker.adapters.MyPagerAdapter
 import com.example.cryptocurrency_tracker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private var binding: ActivityMainBinding? = null
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
-    }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        val fragmentContainer: FragmentContainerView? = binding?.mainFragmentContainer
-        if (fragmentContainer != null) {
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(fragmentContainer.id, MainScreenFragment())
-            fragmentTransaction.commit()
-        }
+        val pagerAdapter = MyPagerAdapter(this)
+        binding.viewPager.adapter = pagerAdapter
+
+        val tabTitles = arrayOf("Home", "Popular", "Favourites", "Search")
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = tabTitles[position]
+            tab.contentDescription = tabTitles[position]
+        }.attach()
     }
 }
 
-// TODO: add ViewPager
+
+// TODO: add ViewModel

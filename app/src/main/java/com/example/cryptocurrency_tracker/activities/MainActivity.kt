@@ -1,20 +1,27 @@
 package com.example.cryptocurrency_tracker.activities
 
 import android.os.Bundle
-import androidx.viewpager2.widget.ViewPager2
+import android.view.View
+import androidx.lifecycle.ViewModelProvider
+import com.example.cryptocurrency_tracker.R
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.adapters.MyPagerAdapter
 import com.example.cryptocurrency_tracker.databinding.ActivityMainBinding
+import com.example.cryptocurrency_tracker.fragments.CoinDescriptionFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var viewModel: MyViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+
+        viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
 
         val pagerAdapter = MyPagerAdapter(this)
         binding.viewPager.adapter = pagerAdapter
@@ -24,8 +31,33 @@ class MainActivity : AppCompatActivity() {
             tab.text = tabTitles[position]
             tab.contentDescription = tabTitles[position]
         }.attach()
+
+        viewModel.selectedCoin.observe(this) { coin ->
+            if (coin != null) {
+                binding.viewPager.visibility = View.GONE
+                binding.descriptionFragment.visibility = View.VISIBLE
+            } else {
+                binding.viewPager.visibility = View.VISIBLE
+                binding.descriptionFragment.visibility = View.GONE
+            }
+        }
     }
-}
+
+        override fun onBackPressed() {
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.description_fragment)
+            if (currentFragment is CoinDescriptionFragment) {
+                binding.viewPager.visibility = View.VISIBLE
+                supportFragmentManager.popBackStack()
+                return
+            }
+            super.onBackPressed()
+        }
+    }
 
 
-// TODO: add ViewModel
+// TODO: edit ViewPager
+// TODO: update heart icon if added
+// TODO: add notifications for adding / removing favourites - extra -
+
+// TODO: 1 or 2 ViewModels ?
+// TODO: database files ?

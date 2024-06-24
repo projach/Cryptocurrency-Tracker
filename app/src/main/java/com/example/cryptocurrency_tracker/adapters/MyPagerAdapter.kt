@@ -9,13 +9,13 @@ import com.example.cryptocurrency_tracker.fragments.FavouritesFragment
 import com.example.cryptocurrency_tracker.fragments.MainScreenFragment
 
 class MyPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
-    private val fragmentList = listOf(
-        MainScreenFragment(),
-        PopularFragment(),
-        FavouritesFragment(),
-        SearchFragment()
+    private val fragments = listOf(
+        MainScreenFragment.newInstance(),
+        PopularFragment.newInstance(),
+        FavouritesFragment.newInstance(),
+        SearchFragment.newInstance()
     )
 
-    override fun getItemCount(): Int = fragmentList.size
-    override fun createFragment(position: Int): Fragment = fragmentList[position]
+    override fun getItemCount(): Int = fragments.size
+    override fun createFragment(position: Int): Fragment = fragments[position]
 }

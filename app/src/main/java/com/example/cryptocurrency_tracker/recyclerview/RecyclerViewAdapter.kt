@@ -9,12 +9,14 @@ import com.example.cryptocurrency_tracker.fragments.MainScreenFragment
 
 class RecyclerViewAdapter(
     private val arrayData: List<UserEntity>,
-    mainScreenFragment: MainScreenFragment
+//    mainScreenFragment: MainScreenFragment,
+    private val onDisplayClick: (UserEntity) -> Unit,
+    private val onShareClick: (UserEntity) -> Unit,
+    private val onFavouriteClick: (UserEntity) -> Unit
 ) : RecyclerView.Adapter<RecyclerViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
-        val view =
-            CoinViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return RecyclerViewHolder(view)
+        val view = CoinViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return RecyclerViewHolder(view, onDisplayClick, onShareClick, onFavouriteClick)
     }
 
     override fun getItemCount(): Int = arrayData.size

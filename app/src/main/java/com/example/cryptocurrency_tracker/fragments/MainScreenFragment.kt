@@ -4,22 +4,40 @@ import android.view.View
 import android.os.Bundle
 import androidx.room.Room
 import com.google.gson.Gson
+import android.app.Activity
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.runBlocking
 import io.ktor.client.statement.bodyAsText
-import com.example.cryptocurrency_tracker.database.UserEntity
+import androidx.lifecycle.ViewModelProvider
+import com.example.cryptocurrency_tracker.R
 import com.example.cryptocurrency_tracker.network.Networking
+import com.example.cryptocurrency_tracker.database.UserEntity
+import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.database.DatabaseInstance
-import com.example.cryptocurrency_tracker.network.PopularJsonResponse
+import com.example.cryptocurrency_tracker.network.MainScreenJsonResponse
 import com.example.cryptocurrency_tracker.recyclerview.RecyclerViewAdapter
 import com.example.cryptocurrency_tracker.databinding.FragmentMainScreenBinding
 
 class MainScreenFragment : Fragment() {
     private lateinit var binding: FragmentMainScreenBinding
 
-    val coinsUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
+    private lateinit var viewModel: MyViewModel
+
+    // private var addedToFavourites = false
+
+    private val coinsUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val act = activity
+        viewModel = when (act) {
+            is Activity -> ViewModelProvider(act).get(MyViewModel::class.java)
+            else -> ViewModelProvider(this).get(MyViewModel::class.java)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +50,20 @@ class MainScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+//        addedToFavourites = viewModel.addedToFavourites(coin)
+//        updateHeartIcon()
+//
+//        binding.favouriteBtn.setOnClickListener {
+//            addedToFavourites = !addedToFavourites
+//
+//            if (!addedToFavourites) {
+//                viewModel.addToFavourites(coin)
+//            } else {
+//                viewModel.removeFromFavourites(coin)
+//            }
+//            updateHeartIcon()
+//        }
+
         val networking = Networking()
 
         if (networking.isNetworkAvailable(context)) {
@@ -43,7 +75,10 @@ class MainScreenFragment : Fragment() {
                 binding.recyclerView.adapter =
                     RecyclerViewAdapter(
                         databaseData,
-                        MainScreenFragment()
+                        { coin -> viewModel.selectCoin(coin) },
+                        { coin -> viewModel.shareCoin(coin) },
+                        { coin -> viewModel.addToFavourites(coin) },
+//                      MainScreenFragment()
                     )
             }
             binding.mainScreenRefresh.setOnClickListener {
@@ -55,6 +90,11 @@ class MainScreenFragment : Fragment() {
         }
     }
 
+//    private fun updateHeartIcon() {
+//        val iconRes = if (addedToFavourites) R.drawable.favourite_filled else R.drawable.favourite_unfilled
+//        binding.favouriteBtn.setImageResource(iconRes)
+//    }
+
     private fun showUIOnline() {
         val data = takeData(Networking(), coinsUrl)
         saveDatabase(data)
@@ -63,24 +103,25 @@ class MainScreenFragment : Fragment() {
             binding.recyclerView.adapter =
                 RecyclerViewAdapter(
                     databaseData,
-                    MainScreenFragment()
+                    { coin -> viewModel.selectCoin(coin) },
+                    { coin -> viewModel.shareCoin(coin) },
+                    { coin -> viewModel.addToFavourites(coin) },
+//                  MainScreenFragment()
                 )
         }
     }
 
-    // TODO: popular or home ?
-    private fun takeData(networking: Networking, url: String): Array<PopularJsonResponse> {
+    private fun takeData(networking: Networking, url: String): Array<MainScreenJsonResponse> {
         val coins = networking.makeCall(url)
-        var popularJsonResponse: Array<PopularJsonResponse>
+        var mainScreenJsonResponse: Array<MainScreenJsonResponse>
         runBlocking {
-            popularJsonResponse =
-                Gson().fromJson(coins.bodyAsText(), Array<PopularJsonResponse>::class.java)
+            mainScreenJsonResponse =
+                Gson().fromJson(coins.bodyAsText(), Array<MainScreenJsonResponse>::class.java)
         }
-        return popularJsonResponse
+        return mainScreenJsonResponse
     }
 
-    // deletes everything in the database and populates it again with the new request
-    private fun saveDatabase(data: Array<PopularJsonResponse>) {
+    private fun saveDatabase(data: Array<MainScreenJsonResponse>) {
         val ctx = context
         if (ctx != null) {
             val database =

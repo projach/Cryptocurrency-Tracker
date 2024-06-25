@@ -44,15 +44,15 @@ class CoinDescriptionFragment : Fragment() {
             binding.coinPrice.text = coin.currentPrice.toString()
             // TODO: display + market cap, 24-hour trading volume and price chart
 
-            binding?.favouriteBtn?.setOnClickListener {
+            binding.favouriteBtn.setOnClickListener {
                 viewModel.addToFavourites(coin)
             }
 
-            binding?.shareBtn?.setOnClickListener {
+            binding.shareBtn.setOnClickListener {
                 viewModel.shareCoin(coin)
             }
 
-            binding?.exitBtn?.setOnClickListener {
+            binding.exitBtn.setOnClickListener {
                 requireActivity().onBackPressed()
             }
         }

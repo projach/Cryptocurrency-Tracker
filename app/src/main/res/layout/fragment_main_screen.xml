@@ -15,7 +15,7 @@
        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
        tools:itemCount="7"
        tools:listitem="@layout/coin_view"
-       app:layout_constraintTop_toBottomOf="@id/main_screen_refresh"
+       app:layout_constraintTop_toTopOf="parent"
        app:layout_constraintLeft_toLeftOf="parent"
        app:layout_constraintRight_toRightOf="parent"
        app:layout_constraintBottom_toBottomOf="parent"/>
@@ -27,7 +27,7 @@
        android:layout_height="0dp"
        android:textColor="@color/white"
        android:backgroundTint="@color/black"
-       android:text="Refresh"
+       android:text="@string/refresh"
        android:drawableEnd="@drawable/refresh"
        android:drawableTint="@color/white"
        android:drawablePadding="7dp"

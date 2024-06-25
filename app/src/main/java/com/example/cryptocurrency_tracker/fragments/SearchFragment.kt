@@ -12,6 +12,7 @@ import io.ktor.client.statement.bodyAsText
 import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.databinding.FragmentSearchBinding
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptocurrency_tracker.R
 import com.example.cryptocurrency_tracker.database.UserEntity
 import com.example.cryptocurrency_tracker.network.SearchJsonResponse
@@ -27,7 +28,7 @@ class SearchFragment : Fragment() {
 
     private lateinit var viewModel: MyViewModel
 
-    private val URL = "https://api.coingecko.com/api/v3/search?query=bitcoin&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
+    private val Url = "https://api.coingecko.com/api/v3/search?query=bitcoin&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
 
     private val client = HttpClient(CIO)
 
@@ -51,7 +52,8 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showUIOnline()
+        // showUIOnline()
+
 //        binding?.searchButton?.setOnClickListener {
 //            val query = binding?.searchInput?.text.toString().trim()
 //            if (query.isNotEmpty()) {
@@ -73,8 +75,8 @@ class SearchFragment : Fragment() {
 ////            Log.d("DATA FOR SEARCH", jsonData.toString())
 
         private fun showUIOnline() {
-            viewModel.viewModelScope.launch {
-                val data = takeData(Networking(), URL)
+//            viewModel.viewModelScope.launch {
+                val data = takeData(Networking(), Url)
                 if (data != null) {
                     val recyclerViewAdapter = RecyclerViewAdapter(
                         convertData(data),
@@ -94,8 +96,9 @@ class SearchFragment : Fragment() {
                         }
                     )
                     binding.recyclerView.adapter = recyclerViewAdapter
+                    binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
                 }
-            }
+//            }
         }
 
         private fun convertData(data: Array<SearchJsonResponse>): List<UserEntity>{

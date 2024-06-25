@@ -24,7 +24,7 @@ class RecyclerViewHolder(
 
         updateFavouriteIcon(data.id)
 
-        binding.constraintLayoutCoin.setOnClickListener {
+        binding.displayBtn.setOnClickListener {
             onDisplayClick(data)
         }
 

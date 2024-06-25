@@ -12,16 +12,22 @@ import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.databinding.FragmentSearchBinding
 import androidx.lifecycle.viewModelScope
 import com.example.cryptocurrency_tracker.database.UserEntity
+import com.example.cryptocurrency_tracker.network.MainScreenJsonResponse
+import com.example.cryptocurrency_tracker.network.Networking
 import com.example.cryptocurrency_tracker.network.SearchJsonResponse
 import com.google.gson.Gson
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class SearchFragment : Fragment() {
+    var URL = "https://api.coingecko.com/api/v3/search?query=bitcoin&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
+
     private lateinit var binding: FragmentSearchBinding
 
     private lateinit var viewModel: MyViewModel
@@ -48,6 +54,15 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val network = Networking()
+
+        val data = network.makeCall(URL)
+        val jsonData: Array<SearchJsonResponse>
+        runBlocking {
+           jsonData = Gson().fromJson(data.bodyAsText(), Array<SearchJsonResponse>::class.java)
+        }
+        Log.d("DATA FOR SEARCH", jsonData.toString())
+
 
 //        binding?.searchButton?.setOnClickListener {
 //            val query = binding?.searchInput?.text.toString().trim()
@@ -60,53 +75,6 @@ class SearchFragment : Fragment() {
 
     }
 
-//        private fun searchItem(query: String) {
-//            // using viewModelScope to launch a coroutine
-//            viewModelStore.launch(Dispatchers.IO) {
-//                try {
-//                    val response = client.get<String>("https://api.coingecko.com/api/v3/search?q={query}") {
-//                        parameter("q", query)
-//                    }
-//                    Log.d("RESPONSE", response)
-//
-//                    val jsonResponse =
-//                        Gson().fromJson(response, Array<SearchJsonResponse>::class.java)
-//                    val dataList = jsonResponse.mapNotNull { it.ide.toString() }
-//
-//                    // update UI
-//                    launch(Dispatchers.Main) {
-//                        binding.recyclerView.adapter =
-//                            SecondListAdapter(dataList = dataList) { value ->
-//                                Log.d("TAG", "User selected the item $value")
-//                                myViewModel.selectedItem = value
-//                                myViewModel.streamSelectedItem.postValue(value)
-//                            }
-//                    }
-//                } catch (e: Exception) {
-//                    Log.e("ERROR", "Error performing search: ${e.message}", e)
-//                }
-//            }
-//        }
-
-//        runBlocking {
-//            val response =
-//                client.get("https://api.coingecko.com/api/v3/search") {
-//                    parameter("q", query)
-//                }
-//            Log.d("RESPONSE", response.bodyAsText())
-//
-//            val jsonResponse =
-//                Gson().fromJson(response.bodyAsText(), Array<SearchJsonResponse>::class.java)
-//
-//            val dataList = jsonResponse.mapNotNull { it.ide.toString() }
-//
-//            binding.networkMainRecycler.adapter =
-//                SecondListAdapter(dataList = dataList, listener = { value ->
-//                    Log.d("TAG", "user select the item ".plus(value))
-//                    myViewModel.selectedItem = value
-//                    myViewModel.streamSelectedItem.postValue(value)
-//                })
-//        }
 
     companion object {
         @JvmStatic

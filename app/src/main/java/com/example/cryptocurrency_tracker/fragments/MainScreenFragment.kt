@@ -6,9 +6,13 @@ import androidx.room.Room
 import com.google.gson.Gson
 import android.app.Activity
 import android.view.ViewGroup
+import kotlinx.coroutines.launch
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import androidx.lifecycle.viewModelScope
 import io.ktor.client.statement.bodyAsText
 import androidx.lifecycle.ViewModelProvider
 import com.example.cryptocurrency_tracker.R
@@ -24,8 +28,6 @@ class MainScreenFragment : Fragment() {
     private lateinit var binding: FragmentMainScreenBinding
 
     private lateinit var viewModel: MyViewModel
-
-    // private var addedToFavourites = false
 
     private val coinsUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
 
@@ -50,37 +52,36 @@ class MainScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        addedToFavourites = viewModel.addedToFavourites(coin)
-//        updateHeartIcon()
-//
-//        binding.favouriteBtn.setOnClickListener {
-//            addedToFavourites = !addedToFavourites
-//
-//            if (!addedToFavourites) {
-//                viewModel.addToFavourites(coin)
-//            } else {
-//                viewModel.removeFromFavourites(coin)
-//            }
-//            updateHeartIcon()
-//        }
-
         val networking = Networking()
 
         if (networking.isNetworkAvailable(context)) {
             showUIOnline()
         } else {
             binding.mainScreenRefresh.visibility = View.VISIBLE
-            val databaseData = getDatabase()
-            if (databaseData != null) {
-                binding.recyclerView.adapter =
-                    RecyclerViewAdapter(
+            viewModel.viewModelScope.launch {
+                val databaseData = getDatabase()
+                if (databaseData != null) {
+                    val recyclerViewAdapter = RecyclerViewAdapter(
                         databaseData,
-                        { coin -> viewModel.selectCoin(coin) },
-                        { coin -> viewModel.shareCoin(coin) },
-                        { coin -> viewModel.addToFavourites(coin) },
-//                      MainScreenFragment()
+                        viewModel,
+                        onDisplayClick = { coin ->
+                            viewModel.selectCoin(coin)
+                            parentFragmentManager.beginTransaction()
+                                .replace(R.id.description_fragment, CoinDescriptionFragment.newInstance())
+                                .addToBackStack(null)
+                                .commit()
+                        },
+                        onShareClick = { coin ->
+                            viewModel.shareCoin(coin)
+                        },
+                        onFavouriteClick = { coin ->
+                            viewModel.removeFromFavourites(coin)
+                        },
                     )
+                    binding.recyclerView.adapter = recyclerViewAdapter
+                }
             }
+
             binding.mainScreenRefresh.setOnClickListener {
                 if (networking.isNetworkAvailable(context)) {
                     binding.mainScreenRefresh.visibility = View.INVISIBLE
@@ -90,24 +91,31 @@ class MainScreenFragment : Fragment() {
         }
     }
 
-//    private fun updateHeartIcon() {
-//        val iconRes = if (addedToFavourites) R.drawable.favourite_filled else R.drawable.favourite_unfilled
-//        binding.favouriteBtn.setImageResource(iconRes)
-//    }
-
     private fun showUIOnline() {
-        val data = takeData(Networking(), coinsUrl)
-        saveDatabase(data)
-        val databaseData = getDatabase()
-        if (databaseData != null) {
-            binding.recyclerView.adapter =
-                RecyclerViewAdapter(
+        viewModel.viewModelScope.launch {
+            val data = takeData(Networking(), coinsUrl)
+            saveDatabase(data)
+            val databaseData = getDatabase()
+            if (databaseData != null) {
+                val recyclerViewAdapter = RecyclerViewAdapter(
                     databaseData,
-                    { coin -> viewModel.selectCoin(coin) },
-                    { coin -> viewModel.shareCoin(coin) },
-                    { coin -> viewModel.addToFavourites(coin) },
-//                  MainScreenFragment()
+                    viewModel,
+                    onDisplayClick = { coin ->
+                        viewModel.selectCoin(coin)
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.description_fragment, CoinDescriptionFragment.newInstance())
+                            .addToBackStack(null)
+                            .commit()
+                    },
+                    onShareClick = { coin ->
+                        viewModel.shareCoin(coin)
+                    },
+                    onFavouriteClick = { coin ->
+                        viewModel.addToFavourites(coin)
+                    }
                 )
+                binding.recyclerView.adapter = recyclerViewAdapter
+            }
         }
     }
 
@@ -121,43 +129,42 @@ class MainScreenFragment : Fragment() {
         return mainScreenJsonResponse
     }
 
-    private fun saveDatabase(data: Array<MainScreenJsonResponse>) {
+    private suspend fun saveDatabase(data: Array<MainScreenJsonResponse>) {
         val ctx = context
         if (ctx != null) {
             val database =
                 Room.databaseBuilder(ctx, DatabaseInstance::class.java, "UserDatabase")
-                    .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build()
-            if (database.getUserDao().readAll().isEmpty()) {
-                var id = 0
-                data.forEach {
-                    id++
-                    database.getUserDao()
-                        .save(UserEntity(id, it.name, it.symbol, it.image, it.currentPrice, false))
-                }
-            } else {
-                data.forEach {
-                    database.getUserDao().updateData(it.currentPrice, it.name)
+            withContext(Dispatchers.IO) {
+                if (database.getUserDao().readAll().isEmpty()) {
+                    var id = 0
+                    data.forEach {
+                        id++
+                        database.getUserDao().save(UserEntity(id, it.name, it.symbol, it.image, it.currentPrice, false))
+                    }
+                } else {
+                    data.forEach {
+                        database.getUserDao().updateData(it.currentPrice, it.name)
+                    }
                 }
             }
         }
     }
 
-    private fun getDatabase(): List<UserEntity>? {
+    private suspend fun getDatabase(): List<UserEntity>? {
         val ctx = context
         if (ctx != null) {
             val database =
                 Room.databaseBuilder(ctx, DatabaseInstance::class.java, "UserDatabase")
-                    .allowMainThreadQueries()
                     .build()
-
-            val data = database.getUserDao().readAll()
-
-            if (data.isEmpty()) {
-                return null
-            } else {
-                return data
+            return withContext(Dispatchers.IO) {
+                val data = database.getUserDao().readAll()
+                if (data.isEmpty()) {
+                    null
+                } else {
+                    data
+                }
             }
         }
         return null

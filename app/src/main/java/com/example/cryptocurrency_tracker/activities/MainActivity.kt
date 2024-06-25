@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.example.cryptocurrency_tracker.R
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
+        setContentView(binding.root)
 
         viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
 
@@ -41,23 +42,24 @@ class MainActivity : AppCompatActivity() {
                 binding.descriptionFragment.visibility = View.GONE
             }
         }
-    }
 
-        override fun onBackPressed() {
-            val currentFragment = supportFragmentManager.findFragmentById(R.id.description_fragment)
-            if (currentFragment is CoinDescriptionFragment) {
-                binding.viewPager.visibility = View.VISIBLE
-                supportFragmentManager.popBackStack()
-                return
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val currentFragment =
+                    supportFragmentManager.findFragmentById(R.id.description_fragment)
+                if (currentFragment is CoinDescriptionFragment) {
+                    binding.viewPager.visibility = View.VISIBLE
+                    // supportFragmentManager.popBackStack()
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
             }
-            super.onBackPressed()
-        }
+        })
     }
+}
 
 
 // TODO: edit ViewPager
-// TODO: update heart icon if added
-// TODO: add notifications for adding / removing favourites - extra -
 
-// TODO: 1 or 2 ViewModels ?
-// TODO: database files ?
+// TODO: update UI instantly / + icons / notifications

@@ -3,12 +3,12 @@ package com.example.cryptocurrency_tracker.fragments
 import android.view.View
 import android.os.Bundle
 import android.app.Activity
+import android.widget.Toast
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.cryptocurrency_tracker.R
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.recyclerview.RecyclerViewAdapter
@@ -17,7 +17,6 @@ import com.example.cryptocurrency_tracker.databinding.FragmentFavouritesBinding
 class FavouritesFragment : Fragment() {
     private lateinit var binding: FragmentFavouritesBinding
 
-    // private val myViewModel: MyViewModel by activityViewModels()
     private lateinit var viewModel: MyViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +43,7 @@ class FavouritesFragment : Fragment() {
         viewModel.favourites.observe(viewLifecycleOwner) { favourites ->
             val recyclerViewAdapter = RecyclerViewAdapter(
                 favourites,
+                viewModel,
                 onDisplayClick = { coin ->
                     viewModel.selectCoin(coin)
                     parentFragmentManager.beginTransaction()
@@ -61,6 +61,10 @@ class FavouritesFragment : Fragment() {
 
             binding.recyclerView.adapter = recyclerViewAdapter
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        }
+
+        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -7,10 +7,20 @@ import android.view.ViewGroup
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.cryptocurrency_tracker.database.UserEntity
 import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.databinding.FragmentPopularBinding
+import com.example.cryptocurrency_tracker.network.MainScreenJsonResponse
+import com.example.cryptocurrency_tracker.network.Networking
+import com.example.cryptocurrency_tracker.recyclerview.RecyclerViewAdapter
+import com.google.gson.Gson
+import io.ktor.client.statement.bodyAsText
+import kotlinx.coroutines.runBlocking
 
 class PopularFragment : Fragment() {
+    //returns the most popular coins by market cap
+    private val URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
+
     private lateinit var binding: FragmentPopularBinding
 
     private lateinit var viewModel: MyViewModel
@@ -35,7 +45,40 @@ class PopularFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //TODO("fix favourites (maybe make favourites to disappear)")
+        showUI()
+    }
 
+    private fun showUI() {
+        val data = takeData(Networking(), URL)
+
+        binding.recyclerView.adapter =
+            RecyclerViewAdapter(
+                convertData(data),
+                { coin -> viewModel.selectCoin(coin) },
+                { coin -> viewModel.shareCoin(coin) },
+                { coin -> viewModel.addToFavourites(coin) },
+            )
+    }
+
+    private fun convertData(data: Array<MainScreenJsonResponse>): List<UserEntity>{
+        val dataToReturn: MutableList<UserEntity> = mutableListOf()
+        var i = 0
+        data.forEach{
+            i++
+            dataToReturn.add(UserEntity(i,it.name,it.symbol,it.image,it.currentPrice,false))
+        }
+        return dataToReturn
+    }
+
+    private fun takeData(networking: Networking, url: String): Array<MainScreenJsonResponse> {
+        val coins = networking.makeCall(url)
+        var mainScreenJsonResponse: Array<MainScreenJsonResponse>
+        runBlocking {
+            mainScreenJsonResponse =
+                Gson().fromJson(coins.bodyAsText(), Array<MainScreenJsonResponse>::class.java)
+        }
+        return mainScreenJsonResponse
     }
 
     companion object {

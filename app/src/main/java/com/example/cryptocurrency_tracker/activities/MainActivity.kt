@@ -62,4 +62,6 @@ class MainActivity : AppCompatActivity() {
 
 // TODO: edit ViewPager
 
+// TODO: suspend fun
+// TODO: coin description fragment
 // TODO: update UI instantly / + icons / notifications

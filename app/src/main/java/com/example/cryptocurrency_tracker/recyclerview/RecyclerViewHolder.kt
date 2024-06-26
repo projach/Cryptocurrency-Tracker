@@ -28,9 +28,6 @@ class RecyclerViewHolder(
             onDisplayClick(data)
         }
 
-        binding.shareBtn.setOnClickListener {
-            onShareClick(data)
-        }
 
         binding.favouriteBtn.setOnClickListener {
             val updatedFavouriteState = !data.favourite

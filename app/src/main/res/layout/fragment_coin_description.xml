@@ -8,76 +8,124 @@
     tools:context=".fragments.CoinDescriptionFragment">
 
     <Button
-        android:id="@+id/exit_btn"
+        android:id="@+id/description_exit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/black"
-        android:text="Back"
         android:drawableLeft="@drawable/chevron_left"
         android:drawableTint="@color/white"
-        app:tint="@android:color/white"
-        android:drawablePadding="7dp"
+        android:text="@string/back"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
+
+    <TextView
+        android:id="@+id/text_fragment_description"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="30dp"
+        android:gravity="center_vertical"
+        android:text="@string/description"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/description_exit_btn"
+        app:layout_constraintLeft_toRightOf="@id/description_exit_btn"
+        app:layout_constraintRight_toLeftOf="@id/share_btn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/share_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/share"
-        android:contentDescription="Share"
-        app:tint="@android:color/white"
-        android:layout_marginTop="31dp"
         android:layout_marginEnd="5dp"
+        android:contentDescription="@string/share"
+        android:src="@drawable/share"
+        app:layout_constraintBottom_toBottomOf="@id/description_exit_btn"
+        app:layout_constraintRight_toLeftOf="@id/favourite_btn"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/favourite_btn"/>
+        app:tint="@android:color/white" />
 
     <ImageView
         android:id="@+id/favourite_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/favourite_unfilled"
-        android:contentDescription="Favourite"
-        app:tint="@android:color/white"
-        android:layout_marginTop="31dp"
         android:layout_marginEnd="5dp"
+        android:contentDescription="@string/favourite"
+        android:src="@drawable/favourite_unfilled"
+        app:layout_constraintBottom_toBottomOf="@id/description_exit_btn"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:tint="@android:color/white" />
 
     <TextView
         android:id="@+id/coin_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:text="Coin Name"
+        android:textColor="@color/white"
         android:textSize="19sp"
         android:textStyle="bold"
-        android:layout_marginTop="17dp"
-        android:layout_marginStart="15dp"
-        app:layout_constraintTop_toBottomOf="@id/exit_btn"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_fragment_description" />
 
     <TextView
         android:id="@+id/coin_symbol"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Coin Symbol"
-        android:textSize="17sp"
-        android:layout_marginTop="11dp"
-        android:layout_marginStart="15dp"
-        app:layout_constraintTop_toBottomOf="@id/coin_name"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginStart="10dp"
+        android:text="(Coin Symbol)"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/coin_name"
+        app:layout_constraintLeft_toRightOf="@id/coin_name"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
-        android:id="@+id/coin_price"
+        android:id="@+id/coin_price_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Coin Price"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/coin_price_last_week"
+        app:layout_constraintTop_toBottomOf="@id/coin_name" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="1dp"
+        android:layout_height="20dp"
+        android:background="@color/gray_low_op"
+        app:layout_constraintBottom_toBottomOf="@id/coin_price_now"
+        app:layout_constraintLeft_toRightOf="@id/coin_price_now"
+        app:layout_constraintRight_toLeftOf="@id/coin_price_last_week" />
+
+
+    <TextView
+        android:id="@+id/coin_price_last_week"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Coin Price"
+        android:textColor="@color/white"
         android:textSize="17sp"
-        android:layout_marginTop="11dp"
-        android:layout_marginStart="15dp"
-        app:layout_constraintTop_toBottomOf="@id/coin_symbol"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@id/coin_price_now"
+        app:layout_constraintLeft_toRightOf="@id/coin_price_now"
+        app:layout_constraintRight_toRightOf="parent" />
 
-<!-- TODO: + market cap, 24-hour trading volume and price chart -->
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/coin_linechart_price"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/coin_price_now" />
+
+    <!-- TODO: + market cap, 24-hour trading volume and price chart -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

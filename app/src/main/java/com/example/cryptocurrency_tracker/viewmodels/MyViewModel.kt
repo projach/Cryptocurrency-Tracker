@@ -42,7 +42,7 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
     fun shareCoin(coin: UserEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             _selectedCoin.value = coin
-            // TODO: share with other apps
+            // TODO: delete later
         }
 
     }

@@ -3,6 +3,7 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#DFDCDC</color>
+    <color name="gray_low_op">#4FDFDCDC</color>
     <color name="tabSelectedIndicator">#FFFFFF</color>
     <color name="tabSelectedTextColor">#FFFFFF</color>
     <color name="tabUnselectedTextColor">#EFEDED</color>

@@ -69,25 +69,13 @@
         app:layout_constraintLeft_toRightOf="@id/constraint_layout_clickable">
 
         <ImageView
-            android:id="@+id/share_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/share"
-            app:tint="@android:color/white"
-            android:contentDescription="@string/share"
-            android:layout_marginEnd="5dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/favourite_btn"/>
-
-        <ImageView
             android:id="@+id/favourite_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/favourite_unfilled"
             app:tint="@android:color/white"
             android:contentDescription="@string/favourite"
-            android:layout_marginEnd="5dp"
+            android:layout_marginEnd="25dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
@@ -98,7 +86,7 @@
     <View
         android:layout_width="0dp"
         android:layout_height="3dp"
-        android:backgroundTint="@color/gray"
+        android:background="@color/gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

@@ -93,7 +93,7 @@
         android:textColor="@color/white"
         android:textSize="17sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/coin_price_last_week"
+        app:layout_constraintRight_toLeftOf="@id/coin_price_last_day"
         app:layout_constraintTop_toBottomOf="@id/coin_name" />
 
     <View
@@ -103,14 +103,14 @@
         android:background="@color/gray_low_op"
         app:layout_constraintBottom_toBottomOf="@id/coin_price_now"
         app:layout_constraintLeft_toRightOf="@id/coin_price_now"
-        app:layout_constraintRight_toLeftOf="@id/coin_price_last_week" />
+        app:layout_constraintRight_toLeftOf="@id/coin_price_last_day" />
 
 
     <TextView
-        android:id="@+id/coin_price_last_week"
+        android:id="@+id/coin_price_last_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Coin Price"
+        android:text="Price change 24hr"
         android:textColor="@color/white"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="@id/coin_price_now"

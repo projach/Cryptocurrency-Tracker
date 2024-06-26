@@ -75,14 +75,11 @@ class CoinDescriptionFragment : Fragment() {
             putExtra(Intent.EXTRA_TITLE, "Look at this interesting coin")
 
             // Adding the crypto name and coin price in a single text extra
-            putExtra(Intent.EXTRA_TEXT, "Crypto name = $name\nCoin price = $price")
-
-            // Adding the image URI
-            putExtra(Intent.EXTRA_STREAM, Uri.parse(image))
-
-            // Granting read permission for the URI
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            putExtra(Intent.EXTRA_TEXT, "Look the price of this Crypto Coin\nCrypto name: $name\nCoin price: $price\nImage URL: $image")
+            
+            type = "text/*"
         }, null)
+
         startActivity(share)
     }
 

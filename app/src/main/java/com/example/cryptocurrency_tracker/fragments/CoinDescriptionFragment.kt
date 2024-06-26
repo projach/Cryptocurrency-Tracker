@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.databinding.FragmentCoinDescriptionBinding
+import com.squareup.picasso.Picasso
 import java.net.URI
 import java.util.Locale
 
@@ -23,13 +24,13 @@ class CoinDescriptionFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+//        viewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
 
-//        val act = activity
-//        viewModel = when (act) {
-//            is Activity -> ViewModelProvider(act).get(MyViewModel::class.java)
-//            else -> ViewModelProvider(this).get(MyViewModel::class.java)
-//        }
+        val act = activity
+        viewModel = when (act) {
+            is Activity -> ViewModelProvider(act).get(MyViewModel::class.java)
+            else -> ViewModelProvider(this).get(MyViewModel::class.java)
+        }
     }
 
     override fun onCreateView(
@@ -48,8 +49,10 @@ class CoinDescriptionFragment : Fragment() {
             binding.coinName.text = coin.name
             binding.coinSymbol.text = String.format("(" + coin.symbol + ")")
             binding.coinPriceNow.text = String.format(Locale.getDefault(),"%.2f", coin.currentPrice).plus("€")
+            binding.coinPriceLastDay.text = String.format(Locale.getDefault(),"%.2f", coin.priceChange).plus("€")
             // TODO: display + market cap, 24-hour trading volume and price chart
 
+            Picasso.get().load(coin.image).into(binding.descriptionImageCoin)
             binding.favouriteBtn.setOnClickListener {
                 viewModel.addToFavourites(coin)
             }
@@ -76,7 +79,7 @@ class CoinDescriptionFragment : Fragment() {
 
             // Adding the crypto name and coin price in a single text extra
             putExtra(Intent.EXTRA_TEXT, "Look the price of this Crypto Coin\nCrypto name: $name\nCoin price: $price\nImage URL: $image")
-            
+
             type = "text/*"
         }, null)
 

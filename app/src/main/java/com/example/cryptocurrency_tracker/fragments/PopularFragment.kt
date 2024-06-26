@@ -15,7 +15,7 @@ import com.example.cryptocurrency_tracker.R
 import com.example.cryptocurrency_tracker.network.Networking
 import com.example.cryptocurrency_tracker.database.UserEntity
 import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
-import com.example.cryptocurrency_tracker.network.MainScreenJsonResponse
+import com.example.cryptocurrency_tracker.network.JsonResponse
 import com.example.cryptocurrency_tracker.recyclerview.RecyclerViewAdapter
 import com.example.cryptocurrency_tracker.databinding.FragmentPopularBinding
 
@@ -77,24 +77,24 @@ class PopularFragment : Fragment() {
       //  }
     }
 
-    private fun convertData(data: Array<MainScreenJsonResponse>): List<UserEntity>{
+    private fun convertData(data: Array<JsonResponse>): List<UserEntity>{
         val dataToReturn: MutableList<UserEntity> = mutableListOf()
         var i = 0
         data.forEach{
             i++
-            dataToReturn.add(UserEntity(it.currentPrice, id, it.name, it.symbol, it.image, false))
+            dataToReturn.add(UserEntity(it.currentPrice, id, it.name, it.symbol, it.image, false, it.priceChange))
         }
         return dataToReturn
     }
 
-    private fun takeData(networking: Networking, url: String): Array<MainScreenJsonResponse> {
+    private fun takeData(networking: Networking, url: String): Array<JsonResponse> {
         val coins = networking.makeCall(url)
-        var mainScreenJsonResponse: Array<MainScreenJsonResponse>
+        var jsonResponse: Array<JsonResponse>
         runBlocking {
-            mainScreenJsonResponse =
-                Gson().fromJson(coins.bodyAsText(), Array<MainScreenJsonResponse>::class.java)
+            jsonResponse =
+                Gson().fromJson(coins.bodyAsText(), Array<JsonResponse>::class.java)
         }
-        return mainScreenJsonResponse
+        return jsonResponse
     }
 
     companion object {

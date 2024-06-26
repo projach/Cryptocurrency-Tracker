@@ -11,5 +11,6 @@ data class UserEntity(
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "symbol") val symbol: String,
     @ColumnInfo(name = "image") val image: String,
-    @ColumnInfo(name = "favourite") val favourite: Boolean
+    @ColumnInfo(name = "favourite") val favourite: Boolean,
+    @ColumnInfo(name = "price_change") val priceChange: Double
 )

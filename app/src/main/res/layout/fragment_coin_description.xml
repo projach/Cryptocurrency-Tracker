@@ -59,6 +59,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@android:color/white" />
 
+    <ImageView
+        android:id="@+id/description_image_coin"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="@string/coin_image"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/coin_name"
+        app:layout_constraintTop_toTopOf="@id/coin_name"
+        app:layout_constraintBottom_toBottomOf="@id/coin_name"/>
+
+
     <TextView
         android:id="@+id/coin_name"
         android:layout_width="wrap_content"

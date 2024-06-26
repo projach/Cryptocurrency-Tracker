@@ -5,7 +5,7 @@ import androidx.room.Database
 import android.content.Context
 import androidx.room.RoomDatabase
 
-@Database(entities = [UserEntity::class], version = 3, exportSchema = false)
+@Database(entities = [UserEntity::class], version = 4, exportSchema = false)
 
 abstract class DatabaseInstance : RoomDatabase(){
     abstract fun getUserDao(): UserDao
@@ -20,7 +20,7 @@ abstract class DatabaseInstance : RoomDatabase(){
                     context.applicationContext,
                     DatabaseInstance::class.java,
                     "coin_database"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 instance
             }

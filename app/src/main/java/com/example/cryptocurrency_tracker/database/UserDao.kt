@@ -1,12 +1,9 @@
 package com.example.cryptocurrency_tracker.database
 
 import androidx.room.Dao
-import kotlin.jvm.Throws
 import androidx.room.Query
-import androidx.room.Update
 import androidx.room.Delete
 import androidx.room.Insert
-import android.database.SQLException
 import androidx.room.OnConflictStrategy
 
 @Dao
@@ -28,4 +25,8 @@ interface UserDao {
 
     @Query("SELECT * FROM UserEntity WHERE favourite = 1")
     fun favourites(): List<UserEntity>
+
+    @Query("SELECT * FROM UserEntity WHERE name LIKE '%' || :nameSymb || '%' OR symbol LIKE '%' || :nameSymb || '%'")
+    fun search(nameSymb: String): List<UserEntity>
+
 }

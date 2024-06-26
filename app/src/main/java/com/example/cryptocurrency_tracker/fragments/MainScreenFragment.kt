@@ -17,16 +17,17 @@ import com.example.cryptocurrency_tracker.network.Networking
 import com.example.cryptocurrency_tracker.database.UserEntity
 import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.database.DatabaseInstance
-import com.example.cryptocurrency_tracker.network.MainScreenJsonResponse
+import com.example.cryptocurrency_tracker.network.JsonResponse
 import com.example.cryptocurrency_tracker.recyclerview.RecyclerViewAdapter
 import com.example.cryptocurrency_tracker.databinding.FragmentMainScreenBinding
 
 class MainScreenFragment : Fragment() {
     private lateinit var binding: FragmentMainScreenBinding
 
+
     private lateinit var viewModel: MyViewModel
 
-    private val Url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
+    private val URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +92,7 @@ class MainScreenFragment : Fragment() {
 
     private fun showUIOnline() {
       //  viewModel.viewModelScope.launch {
-            val data = takeData(Networking(), Url)
+            val data = takeData(Networking(), URL)
             saveDatabase(data)
             val databaseData = getDatabase()
             if (databaseData != null) {
@@ -118,14 +119,14 @@ class MainScreenFragment : Fragment() {
     //    }
     }
 
-    private fun takeData(networking: Networking, url: String): Array<MainScreenJsonResponse> {
+    private fun takeData(networking: Networking, url: String): Array<JsonResponse> {
         val coins = networking.makeCall(url)
-        var mainScreenJsonResponse: Array<MainScreenJsonResponse>
+        var jsonResponse: Array<JsonResponse>
         runBlocking {
-            mainScreenJsonResponse =
-                Gson().fromJson(coins.bodyAsText(), Array<MainScreenJsonResponse>::class.java)
+            jsonResponse =
+                Gson().fromJson(coins.bodyAsText(), Array<JsonResponse>::class.java)
         }
-        return mainScreenJsonResponse
+        return jsonResponse
     }
 
 //    private fun saveDatabase(data: Array<MainScreenJsonResponse>) {
@@ -151,7 +152,7 @@ class MainScreenFragment : Fragment() {
 //        }
 //    }
 
-    private fun saveDatabase(data: Array<MainScreenJsonResponse>) {
+    private fun saveDatabase(data: Array<JsonResponse>) {
         val ctx = context
         if (ctx != null) {
             val database =
@@ -164,7 +165,7 @@ class MainScreenFragment : Fragment() {
                 data.forEach {
                     id++
                     database.getUserDao()
-                        .save(UserEntity(it.currentPrice, id, it.name, it.symbol, it.image,false))
+                        .save(UserEntity(it.currentPrice, id, it.name, it.symbol, it.image,false,it.priceChange))
                 }
             } else {
                 data.forEach {
@@ -198,6 +199,7 @@ class MainScreenFragment : Fragment() {
             val database =
                 Room.databaseBuilder(ctx, DatabaseInstance::class.java, "UserDatabase")
                     .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
                     .build()
             val data = database.getUserDao().readAll()
             if (data.isEmpty()) {

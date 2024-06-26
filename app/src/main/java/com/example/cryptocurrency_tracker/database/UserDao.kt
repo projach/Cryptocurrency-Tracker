@@ -12,20 +12,20 @@ import androidx.room.OnConflictStrategy
 @Dao
 interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun save(coin: UserEntity)
+    fun save(coin: UserEntity)
 
     @Query("UPDATE UserEntity SET current_price = :price WHERE name = :name")
-    suspend fun updateData(price: Double, name:String)
+    fun updateData(price: Double, name:String)
 
     @Delete
-    suspend fun delete(coin: UserEntity)
+    fun delete(coin: UserEntity)
 
     @Query("DELETE FROM UserEntity")
-    suspend fun deleteAll()
+    fun deleteAll()
 
     @Query("SELECT * FROM UserEntity ORDER BY id ASC")
-    suspend fun readAll() : List<UserEntity>
+    fun readAll() : List<UserEntity>
 
     @Query("SELECT * FROM UserEntity WHERE favourite = 1")
-    suspend fun favourites(): List<UserEntity>
+    fun favourites(): List<UserEntity>
 }

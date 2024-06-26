@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.findFragmentById(R.id.description_fragment)
                 if (currentFragment is CoinDescriptionFragment) {
                     binding.viewPager.visibility = View.VISIBLE
-                    // supportFragmentManager.popBackStack()
+                    supportFragmentManager.popBackStack()
                 } else {
                     isEnabled = false
                     onBackPressedDispatcher.onBackPressed()
@@ -62,4 +62,6 @@ class MainActivity : AppCompatActivity() {
 
 // TODO: edit ViewPager
 
+// TODO: suspend fun
+// TODO: coin description fragment
 // TODO: update UI instantly / + icons / notifications

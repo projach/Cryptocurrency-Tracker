@@ -22,7 +22,7 @@ class CoinDescriptionFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+        // viewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
 
         val act = activity
         viewModel = when (act) {
@@ -59,6 +59,7 @@ class CoinDescriptionFragment : Fragment() {
 
             binding.descriptionExitBtn.setOnClickListener {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
+                // requireActivity().onBackPressed()
             }
         }
     }

@@ -5,13 +5,12 @@ import android.os.Bundle
 import com.google.gson.Gson
 import android.app.Activity
 import android.view.ViewGroup
-import kotlinx.coroutines.launch
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.runBlocking
-import androidx.lifecycle.viewModelScope
 import io.ktor.client.statement.bodyAsText
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptocurrency_tracker.R
 import com.example.cryptocurrency_tracker.network.Networking
 import com.example.cryptocurrency_tracker.database.UserEntity
@@ -26,7 +25,7 @@ class PopularFragment : Fragment() {
     private lateinit var viewModel: MyViewModel
 
     // returns the most popular coins by market cap
-    private val URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
+    private val Url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +51,8 @@ class PopularFragment : Fragment() {
     }
 
     private fun showUIOnline() {
-        viewModel.viewModelScope.launch {
-            val data = takeData(Networking(), URL)
+      //  viewModel.viewModelScope.launch {
+            val data = takeData(Networking(), Url)
             if (data != null) {
                 val recyclerViewAdapter = RecyclerViewAdapter(
                     convertData(data),
@@ -73,8 +72,9 @@ class PopularFragment : Fragment() {
                     }
                 )
                 binding.recyclerView.adapter = recyclerViewAdapter
+                binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
             }
-        }
+      //  }
     }
 
     private fun convertData(data: Array<MainScreenJsonResponse>): List<UserEntity>{
@@ -82,7 +82,7 @@ class PopularFragment : Fragment() {
         var i = 0
         data.forEach{
             i++
-            dataToReturn.add(UserEntity(i,it.name,it.symbol,it.image,it.currentPrice,false))
+            dataToReturn.add(UserEntity(it.currentPrice, id, it.name, it.symbol, it.image, false))
         }
         return dataToReturn
     }

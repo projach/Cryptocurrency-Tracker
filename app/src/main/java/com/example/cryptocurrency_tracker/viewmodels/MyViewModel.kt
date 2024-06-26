@@ -34,13 +34,13 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun selectCoin(coin: UserEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
+//        viewModelScope.launch(Dispatchers.IO) {
             _selectedCoin.value = coin
-        }
+       // }
     }
 
     fun shareCoin(coin: UserEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
+//        viewModelScope.launch(Dispatchers.IO) {
             _selectedCoin.value = coin
             // TODO: delete later
         }

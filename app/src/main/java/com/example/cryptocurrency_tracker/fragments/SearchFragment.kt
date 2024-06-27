@@ -1,6 +1,5 @@
 package com.example.cryptocurrency_tracker.fragments
 
-import android.util.Log
 import android.view.View
 import android.os.Bundle
 import androidx.room.Room
@@ -69,9 +68,6 @@ class SearchFragment : Fragment() {
                         .replace(R.id.description_fragment, CoinDescriptionFragment.newInstance())
                         .addToBackStack(null)
                         .commit()
-                },
-                onFavouriteClick = { coin ->
-                    viewModel.addToFavourites(coin)
                 }
             )
             binding.recyclerView.adapter = recyclerViewAdapter
@@ -88,7 +84,6 @@ class SearchFragment : Fragment() {
                     .fallbackToDestructiveMigration()
                     .build()
             val data = database.getUserDao().search(nameSymbol)
-            Log.d("INSIDE DATABASE", data.toString())
             if (data.isEmpty()) {
                 return null
             } else {

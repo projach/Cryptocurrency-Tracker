@@ -44,9 +44,8 @@ class PopularFragment : Fragment() {
         if (Networking().isNetworkAvailable(context)) {
             showUIOnline()
         }
-        else{
+        else {
             binding.popularScreenRefresh.visibility = View.VISIBLE
-
             binding.popularScreenRefresh.setOnClickListener {
                 Log.d("INSIDE POPULAR","PRESSED BUTTON")
                 if (Networking().isNetworkAvailable(context)) {
@@ -69,9 +68,6 @@ class PopularFragment : Fragment() {
                             .replace(R.id.description_fragment, CoinDescriptionFragment.newInstance())
                             .addToBackStack(null)
                             .commit()
-                    },
-                    onFavouriteClick = { coin ->
-                        viewModel.addToFavourites(coin)
                     }
                 )
                 binding.recyclerView.adapter = recyclerViewAdapter

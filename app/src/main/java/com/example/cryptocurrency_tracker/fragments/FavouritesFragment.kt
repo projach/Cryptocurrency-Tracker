@@ -2,8 +2,6 @@ package com.example.cryptocurrency_tracker.fragments
 
 import android.view.View
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
@@ -40,22 +38,15 @@ class FavouritesFragment : Fragment() {
                 favouriteItems,
                 viewModel,
                 onDisplayClick = { coin ->
-                    Log.d("TO COIN", "We are inside coin$coin")
                     viewModel.selectCoin(coin)
                     parentFragmentManager.beginTransaction()
                         .replace(R.id.description_fragment,CoinDescriptionFragment.newInstance())
                         .addToBackStack(null)
                         .commit()
-                },
-                onFavouriteClick = { coin ->
-                    viewModel.removeFromFavourites(coin)
-                },
+                }
             )
             binding.recyclerView.adapter = recyclerViewAdapter
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        }
-        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 

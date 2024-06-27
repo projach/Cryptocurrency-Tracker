@@ -3,27 +3,25 @@ package com.example.cryptocurrency_tracker.fragments
 import java.util.Locale
 import android.view.View
 import android.os.Bundle
+import com.google.gson.Gson
 import android.content.Intent
 import android.graphics.Color
-import android.util.Log
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import com.squareup.picasso.Picasso
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import kotlinx.coroutines.runBlocking
+import io.ktor.client.statement.bodyAsText
 import com.example.cryptocurrency_tracker.R
-import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
-import com.example.cryptocurrency_tracker.databinding.FragmentCoinDescriptionBinding
-import com.example.cryptocurrency_tracker.network.Networking
-import com.example.cryptocurrency_tracker.network.PriceChartJsonResponse
-import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.Entry
+import androidx.fragment.app.activityViewModels
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.google.gson.Gson
-import io.ktor.client.call.body
-import io.ktor.client.statement.bodyAsText
-import kotlinx.coroutines.runBlocking
+import com.github.mikephil.charting.animation.Easing
+import com.example.cryptocurrency_tracker.network.Networking
+import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
+import com.example.cryptocurrency_tracker.network.PriceChartJsonResponse
+import com.example.cryptocurrency_tracker.databinding.FragmentCoinDescriptionBinding
 
 class CoinDescriptionFragment : Fragment() {
     private lateinit var binding: FragmentCoinDescriptionBinding
@@ -53,6 +51,9 @@ class CoinDescriptionFragment : Fragment() {
             Picasso.get().load(coin.image).into(binding.descriptionImageCoin)
             val chart = binding.coinLinechartPrice
 
+            val addedToFavourites = viewModel.addedToFavourites(coin.symbol)
+            updateFavouriteIcon(addedToFavourites)
+
             val entries = makePriceChart(coin.name)
             if (entries != null) {
                 val dataSet = LineDataSet(entries, "Last 7 Days Prices")
@@ -70,19 +71,18 @@ class CoinDescriptionFragment : Fragment() {
                 chart.description.textColor = Color.MAGENTA
                 chart.description.textSize = 10f
 
-
                 chart.data = LineData(dataSet)
-
 
                 chart.setTouchEnabled(true)
                 chart.setPinchZoom(true)
-
 
                 chart.animateX(1800, Easing.EaseInExpo)
             }
 
             binding.favouriteBtn.setOnClickListener {
-                viewModel.addToFavourites(coin)
+                val newFavouriteStatus = !viewModel.addedToFavourites(coin.symbol)
+                updateFavouriteIcon(newFavouriteStatus)
+                viewModel.handleFavourite(coin)
             }
 
             binding.shareBtn.setOnClickListener {
@@ -95,6 +95,11 @@ class CoinDescriptionFragment : Fragment() {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
         }
+    }
+
+    private fun updateFavouriteIcon(addedToFavourites: Boolean) {
+        val iconRes = if (addedToFavourites) R.drawable.favourite_filled else R.drawable.favourite_unfilled
+        binding.favouriteBtn.setImageResource(iconRes)
     }
 
     private fun sendData(name: String, image:String, price: String ){
@@ -113,7 +118,6 @@ class CoinDescriptionFragment : Fragment() {
 
     private fun takeData(coin:String): PriceChartJsonResponse?{
         val URL = "https://api.coingecko.com/api/v3/coins/${coin.lowercase()}/market_chart?vs_currency=eur&days=7&interval=daily&precision=2&x-cg-demo-api-key=CG-HZhV6p1qKCxRn78hoUoky7aj"
-        Log.d("URL",URL)
         val networking = Networking()
         val graph = networking.makeCall(URL)
         if (graph != null) {

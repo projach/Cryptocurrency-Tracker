@@ -2,6 +2,7 @@ package com.example.cryptocurrency_tracker.activities
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.cryptocurrency_tracker.R
 import androidx.activity.OnBackPressedCallback
@@ -43,6 +44,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.toastMessage.observe(this) { message ->
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
+
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val currentFragment =
@@ -58,8 +63,3 @@ class MainActivity : AppCompatActivity() {
         })
     }
 }
-
-
-// TODO: edit ViewPager ?
-// TODO: viewModelScope ?
-// TODO: update UI instantly / icons + notifications

@@ -4,12 +4,12 @@ import android.util.Log
 import android.content.Context
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.http.HttpStatusCode
 import io.ktor.client.engine.cio.CIO
 import kotlinx.coroutines.runBlocking
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
 
 class Networking {
     fun isNetworkAvailable(context: Context?): Boolean{

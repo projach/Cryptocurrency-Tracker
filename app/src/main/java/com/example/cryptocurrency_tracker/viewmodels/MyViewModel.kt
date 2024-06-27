@@ -38,24 +38,17 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
             _selectedCoin.value = coin
     }
 
-    fun addToFavourites(coin: UserEntity) {
+    fun handleFavourite(coin: UserEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             val existingCoin = userDao.findCoinBySymbol(coin.symbol)
             if (existingCoin == null || !existingCoin.favourite) {
                 userDao.save(coin.copy(favourite = true))
-                loadFavourites()
                 _toastMessage.postValue("${coin.name} added to favourites!")
             } else {
-                _toastMessage.postValue("${coin.name} is already in favourites!")
+                userDao.save(coin.copy(favourite = false))
+                _toastMessage.postValue("${coin.name} removed from favourites!")
             }
-        }
-    }
-
-    fun removeFromFavourites(coin: UserEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            userDao.save(coin.copy(favourite = false))
             loadFavourites()
-            _toastMessage.postValue("${coin.name} removed from favourites!")
         }
     }
 

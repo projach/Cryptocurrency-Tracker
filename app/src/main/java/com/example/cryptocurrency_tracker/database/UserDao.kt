@@ -11,11 +11,14 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun save(coin: UserEntity)
 
-    @Query("UPDATE UserEntity SET current_price = :price WHERE name = :name")
-    fun updateData(price: Double, name:String)
+    @Query("UPDATE UserEntity SET current_price = :price AND price_change = :priceChange WHERE name = :name")
+    fun updateData(price: Double, name:String, priceChange: Double)
 
     @Query("SELECT * FROM UserEntity WHERE symbol = :symbol")
     fun findCoinBySymbol(symbol: String): UserEntity?
+
+    @Query("SELECT MAX(id) FROM USERENTITY")
+    fun getLastId(): Int
 
     @Delete
     fun delete(coin: UserEntity)

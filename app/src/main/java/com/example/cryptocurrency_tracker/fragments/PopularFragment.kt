@@ -2,6 +2,7 @@ package com.example.cryptocurrency_tracker.fragments
 
 import android.view.View
 import android.os.Bundle
+import android.util.Log
 import com.google.gson.Gson
 import android.view.ViewGroup
 import android.view.LayoutInflater
@@ -39,7 +40,21 @@ class PopularFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showUIOnline()
+
+        if (Networking().isNetworkAvailable(context)) {
+            showUIOnline()
+        }
+        else{
+            binding.popularScreenRefresh.visibility = View.VISIBLE
+
+            binding.popularScreenRefresh.setOnClickListener {
+                Log.d("INSIDE POPULAR","PRESSED BUTTON")
+                if (Networking().isNetworkAvailable(context)) {
+                    binding.popularScreenRefresh.visibility = View.GONE
+                    showUIOnline()
+                }
+            }
+        }
     }
 
     private fun showUIOnline() {

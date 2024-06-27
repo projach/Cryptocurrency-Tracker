@@ -13,21 +13,17 @@ class RecyclerViewHolder(
     val binding: CoinViewBinding,
     private val viewModel: MyViewModel,
     private val onDisplayClick: (UserEntity) -> Unit,
-    private val onShareClick: (UserEntity) -> Unit,
     private val onFavouriteClick: (UserEntity) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(data: UserEntity) {
         val imageV: ImageView = binding.viewImageCoin
         Picasso.get().load(data.image).into(imageV)
-        binding.viewTextPrice.text = String.format(Locale.getDefault(),"%.2f", data.currentPrice).plus("€")
         binding.viewTextSymbol.text = data.symbol
-
-        updateFavouriteIcon(data.id)
+        binding.viewTextPrice.text = String.format(Locale.getDefault(),"%.2f", data.currentPrice).plus("€")
 
         binding.displayBtn.setOnClickListener {
             onDisplayClick(data)
         }
-
 
         binding.favouriteBtn.setOnClickListener {
             val updatedFavouriteState = !data.favourite
@@ -38,12 +34,12 @@ class RecyclerViewHolder(
             } else {
                 viewModel.removeFromFavourites(data)
             }
-            updateFavouriteIcon(data.id)
+            updateFavouriteIcon(data.symbol)
         }
     }
 
-    private fun updateFavouriteIcon(coinId: Int) {
-        val addedToFavourites = viewModel.addedToFavourites(coinId)
+    private fun updateFavouriteIcon(coinSymbol: String) {
+        val addedToFavourites = viewModel.addedToFavourites(coinSymbol)
         val iconRes = if (addedToFavourites) R.drawable.favourite_filled else R.drawable.favourite_unfilled
         binding.favouriteBtn.setImageResource(iconRes)
     }

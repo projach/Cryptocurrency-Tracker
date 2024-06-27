@@ -1,44 +1,30 @@
 package com.example.cryptocurrency_tracker.fragments
 
-import android.app.Activity
+import android.util.Log
 import android.view.View
 import android.os.Bundle
+import androidx.room.Room
 import android.text.Editable
 import android.view.ViewGroup
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
-import com.example.cryptocurrency_tracker.databinding.FragmentSearchBinding
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
 import com.example.cryptocurrency_tracker.R
-import com.example.cryptocurrency_tracker.database.DatabaseInstance
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptocurrency_tracker.database.UserEntity
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
+import com.example.cryptocurrency_tracker.database.DatabaseInstance
 import com.example.cryptocurrency_tracker.recyclerview.RecyclerViewAdapter
+import com.example.cryptocurrency_tracker.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
 
-    private lateinit var viewModel: MyViewModel
-
-    private val Url =
-        "https://api.coingecko.com/api/v3/search?query=bitcoin&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
-
-    private val client = HttpClient(CIO)
+   val viewModel: MyViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val act = activity
-        viewModel = when (act) {
-            is Activity -> ViewModelProvider(act).get(MyViewModel::class.java)
-            else -> ViewModelProvider(this).get(MyViewModel::class.java)
-        }
     }
 
     override fun onCreateView(
@@ -51,16 +37,16 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var nameSymb = ""
-        showUIOnline(nameSymb)
+        var nameSymbol = ""
+        showUIOnline(nameSymbol)
         binding.searchInput.addTextChangedListener(object: TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                nameSymb = s.toString()
-                showUIOnline(nameSymb)
+                nameSymbol = s.toString()
+                showUIOnline(nameSymbol)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -68,21 +54,10 @@ class SearchFragment : Fragment() {
             }
 
         })
-//        binding?.searchButton?.setOnClickListener {
-//            val query = binding?.searchInput?.text.toString().trim()
-//            if (query.isNotEmpty()) {
-//                searchItem(query)
-//            } else {
-//                // do nothing
-//            }
-//        }
-
     }
 
-    private fun showUIOnline(nameSymb:String) {
-//            viewModel.viewModelScope.launch {
-        val data = getDatabase(nameSymb)
-        Log.d("INSIDE SHOW UI", data.toString())
+    private fun showUIOnline(nameSymbol:String) {
+        val data = getDatabase(nameSymbol)
         if (data != null) {
             val recyclerViewAdapter = RecyclerViewAdapter(
                 data,
@@ -94,9 +69,6 @@ class SearchFragment : Fragment() {
                         .addToBackStack(null)
                         .commit()
                 },
-                onShareClick = { coin ->
-                    viewModel.shareCoin(coin)
-                },
                 onFavouriteClick = { coin ->
                     viewModel.addToFavourites(coin)
                 }
@@ -105,10 +77,8 @@ class SearchFragment : Fragment() {
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
     }
-//            }
 
-
-    private fun getDatabase(nameSymb:String): List<UserEntity>? {
+    private fun getDatabase(nameSymbol:String): List<UserEntity>? {
         val ctx = context
         if (ctx != null) {
             val database =
@@ -116,7 +86,7 @@ class SearchFragment : Fragment() {
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build()
-            val data = database.getUserDao().search(nameSymb)
+            val data = database.getUserDao().search(nameSymbol)
             Log.d("INSIDE DATABASE", data.toString())
             if (data.isEmpty()) {
                 return null

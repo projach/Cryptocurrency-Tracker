@@ -8,7 +8,7 @@
 
     <EditText
         android:id="@+id/searchInput"
-        android:textSize="13sp"
+        android:textSize="15sp"
         android:layout_width="0dp"
         android:layout_height="51dp"
         android:hint="@string/search_hint"
@@ -19,7 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

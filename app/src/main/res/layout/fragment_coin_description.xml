@@ -15,7 +15,7 @@
         android:drawableLeft="@drawable/chevron_left"
         android:drawableTint="@color/white"
         android:text="@string/back"
-        android:textSize="20sp"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@android:color/white" />
@@ -24,11 +24,11 @@
         android:id="@+id/text_fragment_description"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="57dp"
         android:gravity="center_vertical"
         android:text="@string/description"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/description_exit_btn"
         app:layout_constraintLeft_toRightOf="@id/description_exit_btn"
@@ -69,7 +69,6 @@
         app:layout_constraintTop_toTopOf="@id/coin_name"
         app:layout_constraintBottom_toBottomOf="@id/coin_name"/>
 
-
     <TextView
         android:id="@+id/coin_name"
         android:layout_width="wrap_content"
@@ -90,7 +89,7 @@
         android:layout_marginStart="10dp"
         android:text="(Coin Symbol)"
         android:textColor="@color/white"
-        android:textSize="14sp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@id/coin_name"
         app:layout_constraintLeft_toRightOf="@id/coin_name"
         app:layout_constraintRight_toRightOf="parent" />
@@ -116,7 +115,6 @@
         app:layout_constraintLeft_toRightOf="@id/coin_price_now"
         app:layout_constraintRight_toLeftOf="@id/coin_price_last_day" />
 
-
     <TextView
         android:id="@+id/coin_price_last_day"
         android:layout_width="wrap_content"
@@ -136,7 +134,4 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/coin_price_now" />
-
-    <!-- TODO: + market cap, 24-hour trading volume and price chart -->
-
 </androidx.constraintlayout.widget.ConstraintLayout>

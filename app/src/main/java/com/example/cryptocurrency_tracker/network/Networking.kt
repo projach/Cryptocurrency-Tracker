@@ -1,7 +1,6 @@
 package com.example.cryptocurrency_tracker.network
 
 import android.util.Log
-import com.google.gson.Gson
 import android.content.Context
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
@@ -13,7 +12,6 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.client.statement.HttpResponse
 
 class Networking {
-
     fun isNetworkAvailable(context: Context?): Boolean{
         val connectivityManager =
             context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

@@ -11,12 +11,11 @@ class RecyclerViewAdapter(
     private val arrayData: List<UserEntity>,
     private val viewModel: MyViewModel,
     private val onDisplayClick: (UserEntity) -> Unit,
-    private val onShareClick: (UserEntity) -> Unit,
     private val onFavouriteClick: (UserEntity) -> Unit
 ) : RecyclerView.Adapter<RecyclerViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         val view = CoinViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return RecyclerViewHolder(view, viewModel, onDisplayClick, onShareClick, onFavouriteClick)
+        return RecyclerViewHolder(view, viewModel, onDisplayClick, onFavouriteClick)
     }
 
     override fun getItemCount(): Int = arrayData.size

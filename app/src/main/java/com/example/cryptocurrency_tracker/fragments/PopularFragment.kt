@@ -3,38 +3,30 @@ package com.example.cryptocurrency_tracker.fragments
 import android.view.View
 import android.os.Bundle
 import com.google.gson.Gson
-import android.app.Activity
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.runBlocking
 import io.ktor.client.statement.bodyAsText
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptocurrency_tracker.R
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cryptocurrency_tracker.network.Networking
 import com.example.cryptocurrency_tracker.database.UserEntity
-import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.network.JsonResponse
+import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.recyclerview.RecyclerViewAdapter
 import com.example.cryptocurrency_tracker.databinding.FragmentPopularBinding
 
 class PopularFragment : Fragment() {
     private lateinit var binding: FragmentPopularBinding
 
-    private lateinit var viewModel: MyViewModel
+    val viewModel: MyViewModel by activityViewModels()
 
-    // returns the most popular coins by market cap
     private val Url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&x_cg_demo_api_key=CG-HZhV6p1qKCxRn78hoUoky7aj"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val act = activity
-        viewModel = when (act) {
-            is Activity -> ViewModelProvider(act).get(MyViewModel::class.java)
-            else -> ViewModelProvider(this).get(MyViewModel::class.java)
-        }
     }
 
     override fun onCreateView(
@@ -51,7 +43,6 @@ class PopularFragment : Fragment() {
     }
 
     private fun showUIOnline() {
-      //  viewModel.viewModelScope.launch {
             val data = takeData(Networking(), Url)
             if (data != null) {
                 val recyclerViewAdapter = RecyclerViewAdapter(
@@ -64,9 +55,6 @@ class PopularFragment : Fragment() {
                             .addToBackStack(null)
                             .commit()
                     },
-                    onShareClick = { coin ->
-                        viewModel.shareCoin(coin)
-                    },
                     onFavouriteClick = { coin ->
                         viewModel.addToFavourites(coin)
                     }
@@ -74,7 +62,6 @@ class PopularFragment : Fragment() {
                 binding.recyclerView.adapter = recyclerViewAdapter
                 binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
             }
-      //  }
     }
 
     private fun convertData(data: Array<JsonResponse>): List<UserEntity>{
@@ -102,6 +89,3 @@ class PopularFragment : Fragment() {
         fun newInstance() = PopularFragment()
     }
 }
-
-
-// TODO: each cryptocurrency item should display its name, symbol, current price and price change

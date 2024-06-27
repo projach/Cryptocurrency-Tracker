@@ -14,6 +14,9 @@ interface UserDao {
     @Query("UPDATE UserEntity SET current_price = :price WHERE name = :name")
     fun updateData(price: Double, name:String)
 
+    @Query("SELECT * FROM UserEntity WHERE symbol = :symbol")
+    fun findCoinBySymbol(symbol: String): UserEntity?
+
     @Delete
     fun delete(coin: UserEntity)
 
@@ -26,7 +29,6 @@ interface UserDao {
     @Query("SELECT * FROM UserEntity WHERE favourite = 1")
     fun favourites(): List<UserEntity>
 
-    @Query("SELECT * FROM UserEntity WHERE name LIKE '%' || :nameSymb || '%' OR symbol LIKE '%' || :nameSymb || '%'")
-    fun search(nameSymb: String): List<UserEntity>
-
+    @Query("SELECT * FROM UserEntity WHERE name LIKE '%' || :nameSymbol || '%' OR symbol LIKE '%' || :nameSymbol || '%'")
+    fun search(nameSymbol: String): List<UserEntity>
 }

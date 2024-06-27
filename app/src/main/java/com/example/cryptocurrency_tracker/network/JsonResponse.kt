@@ -8,5 +8,4 @@ data class JsonResponse(
     val name:String,
     val symbol:String,
     val image:String,
-
 )

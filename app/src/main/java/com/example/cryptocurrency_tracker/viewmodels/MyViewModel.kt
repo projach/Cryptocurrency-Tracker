@@ -17,8 +17,8 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
     private val _selectedCoin = MutableLiveData<UserEntity>()
     val selectedCoin: LiveData<UserEntity> get() = _selectedCoin
 
-    private val _favourites = MutableLiveData<List<UserEntity>>()
-    val favourites: LiveData<List<UserEntity>> get() = _favourites
+    private val _favourites = MutableLiveData<Set<UserEntity>>()
+    val favourites: LiveData<Set<UserEntity>> get() = _favourites
 
     private val _toastMessage = MutableLiveData<String>()
     val toastMessage: LiveData<String> get() = _toastMessage
@@ -29,29 +29,25 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun loadFavourites() {
         viewModelScope.launch(Dispatchers.IO) {
-            _favourites.postValue(userDao.favourites())
+            val favouriteItems = userDao.favourites()
+            _favourites.postValue(favouriteItems.toSet())
         }
     }
 
     fun selectCoin(coin: UserEntity) {
-//        viewModelScope.launch(Dispatchers.IO) {
             _selectedCoin.value = coin
-       // }
-    }
-
-    fun shareCoin(coin: UserEntity) {
-        //viewModelScope.launch(Dispatchers.IO) {
-            _selectedCoin.value = coin
-            // TODO: delete later
-        //}
-
     }
 
     fun addToFavourites(coin: UserEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            userDao.save(coin.copy(favourite = true))
-            loadFavourites()
-            _toastMessage.postValue("${coin.name} added to favourites!")
+            val existingCoin = userDao.findCoinBySymbol(coin.symbol)
+            if (existingCoin == null || !existingCoin.favourite) {
+                userDao.save(coin.copy(favourite = true))
+                loadFavourites()
+                _toastMessage.postValue("${coin.name} added to favourites!")
+            } else {
+                _toastMessage.postValue("${coin.name} is already in favourites!")
+            }
         }
     }
 
@@ -63,7 +59,7 @@ class MyViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun addedToFavourites(coinId: Int): Boolean {
-        return _favourites.value?.any { it.id == coinId } ?: false
+    fun addedToFavourites(coinSymbol: String): Boolean {
+        return _favourites.value?.any { it.symbol == coinSymbol } ?: false
     }
 }

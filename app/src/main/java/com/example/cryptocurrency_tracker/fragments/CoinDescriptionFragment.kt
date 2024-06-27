@@ -1,36 +1,24 @@
 package com.example.cryptocurrency_tracker.fragments
 
+import java.util.Locale
 import android.view.View
 import android.os.Bundle
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
-import android.util.Log
 import android.view.ViewGroup
 import android.view.LayoutInflater
+import com.squareup.picasso.Picasso
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.databinding.FragmentCoinDescriptionBinding
-import com.squareup.picasso.Picasso
-import java.net.URI
-import java.util.Locale
 
 class CoinDescriptionFragment : Fragment() {
     private lateinit var binding: FragmentCoinDescriptionBinding
 
-    private lateinit var viewModel: MyViewModel
+    val viewModel: MyViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        viewModel = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
-
-        val act = activity
-        viewModel = when (act) {
-            is Activity -> ViewModelProvider(act).get(MyViewModel::class.java)
-            else -> ViewModelProvider(this).get(MyViewModel::class.java)
-        }
     }
 
     override fun onCreateView(
@@ -45,27 +33,25 @@ class CoinDescriptionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.selectedCoin.observe(viewLifecycleOwner) { coin ->
-            Log.d("INSIDE COIN", "coin name = $coin")
             binding.coinName.text = coin.name
             binding.coinSymbol.text = String.format("(" + coin.symbol + ")")
             binding.coinPriceNow.text = String.format(Locale.getDefault(),"%.2f", coin.currentPrice).plus("€")
             binding.coinPriceLastDay.text = String.format(Locale.getDefault(),"%.2f", coin.priceChange).plus("€")
-            // TODO: display + market cap, 24-hour trading volume and price chart
-
             Picasso.get().load(coin.image).into(binding.descriptionImageCoin)
+            // TODO: + price chart
+
             binding.favouriteBtn.setOnClickListener {
                 viewModel.addToFavourites(coin)
             }
 
             binding.shareBtn.setOnClickListener {
-                viewModel.shareCoin(coin)
+                viewModel.selectCoin(coin)
                 sendData(coin.name, coin.image,
                     String.format(Locale.getDefault(),"%.2f", coin.currentPrice).plus("€"))
             }
 
             binding.descriptionExitBtn.setOnClickListener {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
-                // requireActivity().onBackPressed()
             }
         }
     }
@@ -74,10 +60,8 @@ class CoinDescriptionFragment : Fragment() {
         val share = Intent.createChooser(Intent().apply {
             action = Intent.ACTION_SEND
 
-            // Setting the title of the content
             putExtra(Intent.EXTRA_TITLE, "Look at this interesting coin")
 
-            // Adding the crypto name and coin price in a single text extra
             putExtra(Intent.EXTRA_TEXT, "Look the price of this Crypto Coin\nCrypto name: $name\nCoin price: $price\nImage URL: $image")
 
             type = "text/*"
@@ -86,10 +70,9 @@ class CoinDescriptionFragment : Fragment() {
         startActivity(share)
     }
 
-    private fun makeLineChart(){
+    private fun makePriceChart(){
 
     }
-
 
     companion object {
         @JvmStatic

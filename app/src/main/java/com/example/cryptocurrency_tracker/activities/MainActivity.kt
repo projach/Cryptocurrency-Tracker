@@ -36,10 +36,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.selectedCoin.observe(this) { coin ->
             if (coin != null) {
                 binding.viewPager.visibility = View.GONE
-//                binding.tabLayout.visibility = View.GONE
                 binding.descriptionFragment.visibility = View.VISIBLE
             } else {
-//                binding.tabLayout.visibility = View.VISIBLE
                 binding.viewPager.visibility = View.VISIBLE
                 binding.descriptionFragment.visibility = View.GONE
             }
@@ -62,8 +60,6 @@ class MainActivity : AppCompatActivity() {
 }
 
 
-// TODO: edit ViewPager
-
-// TODO: suspend fun
-// TODO: coin description fragment
-// TODO: update UI instantly / + icons / notifications
+// TODO: edit ViewPager ?
+// TODO: viewModelScope ?
+// TODO: update UI instantly / icons + notifications

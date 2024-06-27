@@ -94,7 +94,7 @@ class PopularFragment : Fragment() {
         var jsonResponse: Array<JsonResponse>
         runBlocking {
             jsonResponse =
-                Gson().fromJson(coins.bodyAsText(), Array<JsonResponse>::class.java)
+                Gson().fromJson(coins?.bodyAsText(), Array<JsonResponse>::class.java)
         }
         return jsonResponse
     }

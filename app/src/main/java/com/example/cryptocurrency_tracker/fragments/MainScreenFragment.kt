@@ -2,6 +2,7 @@ package com.example.cryptocurrency_tracker.fragments
 
 import android.view.View
 import android.os.Bundle
+import android.util.Log
 import androidx.room.Room
 import com.google.gson.Gson
 import android.view.ViewGroup
@@ -48,25 +49,27 @@ class MainScreenFragment : Fragment() {
             showUIOnline()
         } else {
             binding.mainScreenRefresh.visibility = View.VISIBLE
-            val databaseData = getDatabase()
-            if (databaseData != null) {
-                val recyclerViewAdapter = RecyclerViewAdapter(
-                    databaseData,
-                    viewModel,
-                    onDisplayClick = { coin ->
-                        viewModel.selectCoin(coin)
-                        parentFragmentManager.beginTransaction()
-                            .replace(R.id.description_fragment, CoinDescriptionFragment.newInstance())
-                            .addToBackStack(null)
-                            .commit()
-                    },
-                    onFavouriteClick = { coin ->
-                        viewModel.removeFromFavourites(coin)
-                    },
-                )
-                binding.recyclerView.adapter = recyclerViewAdapter
-                binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            }
+//            val databaseData = getDatabase()
+//            Log.d("DATA SHOWN", databaseData.toString())
+//            if (databaseData != null) {
+//                val recyclerViewAdapter = RecyclerViewAdapter(
+//                    databaseData,
+//                    viewModel,
+//                    onDisplayClick = { coin ->
+//                        viewModel.selectCoin(coin)
+//                        parentFragmentManager.beginTransaction()
+//                            .replace(R.id.description_fragment, CoinDescriptionFragment.newInstance())
+//                            .addToBackStack(null)
+//                            .commit()
+//                    },
+//                    onFavouriteClick = { coin ->
+//                        viewModel.removeFromFavourites(coin)
+//                    },
+//                )
+//                binding.recyclerView.adapter = recyclerViewAdapter
+//                binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+//            }
+            showUIOnline()
             binding.mainScreenRefresh.setOnClickListener {
                 if (networking.isNetworkAvailable(context)) {
                     binding.mainScreenRefresh.visibility = View.GONE
@@ -80,6 +83,7 @@ class MainScreenFragment : Fragment() {
             val data = takeData(Networking(), URL)
             saveDatabase(data)
             val databaseData = getDatabase()
+            Log.d("DATA FROM DATABASE", databaseData.toString())
             if (databaseData != null) {
                 val recyclerViewAdapter = RecyclerViewAdapter(
                     databaseData,
@@ -105,7 +109,7 @@ class MainScreenFragment : Fragment() {
         var jsonResponse: Array<JsonResponse>
         runBlocking {
             jsonResponse =
-                Gson().fromJson(coins.bodyAsText(), Array<JsonResponse>::class.java)
+                Gson().fromJson(coins?.bodyAsText(), Array<JsonResponse>::class.java)
         }
         return jsonResponse
     }
@@ -132,7 +136,8 @@ class MainScreenFragment : Fragment() {
                     }
                     else{
                         database.getUserDao().save(
-                            UserEntity(it.priceChange,database.getUserDao().getLastId()+1,it.name,it.symbol,it.image,false,it.priceChange))
+                            UserEntity(it.priceChange,database.getUserDao().getLastId()+1,it.name,it.symbol,it.image,false,it.priceChange)
+                        )
                     }
                 }
             }

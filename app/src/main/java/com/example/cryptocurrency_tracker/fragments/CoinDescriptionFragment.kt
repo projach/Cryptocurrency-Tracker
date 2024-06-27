@@ -4,13 +4,26 @@ import java.util.Locale
 import android.view.View
 import android.os.Bundle
 import android.content.Intent
+import android.graphics.Color
+import android.util.Log
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import com.squareup.picasso.Picasso
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.example.cryptocurrency_tracker.R
 import com.example.cryptocurrency_tracker.viewmodels.MyViewModel
 import com.example.cryptocurrency_tracker.databinding.FragmentCoinDescriptionBinding
+import com.example.cryptocurrency_tracker.network.Networking
+import com.example.cryptocurrency_tracker.network.PriceChartJsonResponse
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.google.gson.Gson
+import io.ktor.client.call.body
+import io.ktor.client.statement.bodyAsText
+import kotlinx.coroutines.runBlocking
 
 class CoinDescriptionFragment : Fragment() {
     private lateinit var binding: FragmentCoinDescriptionBinding
@@ -38,7 +51,35 @@ class CoinDescriptionFragment : Fragment() {
             binding.coinPriceNow.text = String.format(Locale.getDefault(),"%.2f", coin.currentPrice).plus("€")
             binding.coinPriceLastDay.text = String.format(Locale.getDefault(),"%.2f", coin.priceChange).plus("€")
             Picasso.get().load(coin.image).into(binding.descriptionImageCoin)
-            // TODO: + price chart
+            val chart = binding.coinLinechartPrice
+
+            val entries = makePriceChart(coin.name)
+            if (entries != null) {
+                val dataSet = LineDataSet(entries, "Last 7 Days Prices")
+
+                dataSet.setDrawValues(false)
+                dataSet.setDrawFilled(true)
+                dataSet.lineWidth = 3f
+                dataSet.fillColor = Color.GRAY
+                dataSet.fillAlpha = Color.RED
+
+                chart.xAxis.labelRotationAngle = 0f
+
+                chart.description.isEnabled = true
+                chart.description.text = "Last 7 Days Prices"
+                chart.description.textColor = Color.MAGENTA
+                chart.description.textSize = 10f
+
+
+                chart.data = LineData(dataSet)
+
+
+                chart.setTouchEnabled(true)
+                chart.setPinchZoom(true)
+
+
+                chart.animateX(1800, Easing.EaseInExpo)
+            }
 
             binding.favouriteBtn.setOnClickListener {
                 viewModel.addToFavourites(coin)
@@ -70,8 +111,34 @@ class CoinDescriptionFragment : Fragment() {
         startActivity(share)
     }
 
-    private fun makePriceChart(){
+    private fun takeData(coin:String): PriceChartJsonResponse?{
+        val URL = "https://api.coingecko.com/api/v3/coins/${coin.lowercase()}/market_chart?vs_currency=eur&days=7&interval=daily&precision=2&x-cg-demo-api-key=CG-HZhV6p1qKCxRn78hoUoky7aj"
+        Log.d("URL",URL)
+        val networking = Networking()
+        val graph = networking.makeCall(URL)
+        if (graph != null) {
+            var data: PriceChartJsonResponse
+            runBlocking {
+                val body = graph.bodyAsText()
+                data = Gson().fromJson(body, PriceChartJsonResponse::class.java)
+            }
+            return data
+        }
+        return null
+    }
 
+    private fun makePriceChart(coin: String): List<Entry>? {
+        val data = takeData(coin)
+        if (data != null) {
+            val list = mutableListOf<Entry>()
+
+            data.prices.map {
+                list.add(Entry(it[0].toFloat(), it[1].toFloat()))
+            }
+
+            return list
+        }
+        return null
     }
 
     companion object {

@@ -8,8 +8,8 @@ import io.ktor.client.engine.cio.CIO
 import kotlinx.coroutines.runBlocking
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import io.ktor.client.statement.bodyAsText
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 
 class Networking {
     fun isNetworkAvailable(context: Context?): Boolean{
@@ -29,15 +29,17 @@ class Networking {
         return false
     }
 
-    fun makeCall(url:String) : HttpResponse{
+    fun makeCall(url:String) : HttpResponse?{
         val client = HttpClient(CIO)
         val response: HttpResponse
 
         runBlocking {
             response =
                 client.get(url)
-            Log.d("RESPONSE", response.bodyAsText())
         }
-        return response
+        if (response.status == HttpStatusCode.OK) {
+            return response
+        }
+        return null
     }
 }

@@ -1,5 +1,6 @@
 package com.example.cryptocurrency_tracker.recyclerview
 
+import android.util.Log
 import java.util.Locale
 import android.widget.ImageView
 import com.squareup.picasso.Picasso

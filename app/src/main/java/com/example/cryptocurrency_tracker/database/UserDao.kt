@@ -11,7 +11,7 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun save(coin: UserEntity)
 
-    @Query("UPDATE UserEntity SET current_price = :price AND price_change = :priceChange WHERE name = :name")
+    @Query("UPDATE UserEntity SET current_price = :price , price_change = :priceChange WHERE name = :name")
     fun updateData(price: Double, name:String, priceChange: Double)
 
     @Query("SELECT * FROM UserEntity WHERE symbol = :symbol")

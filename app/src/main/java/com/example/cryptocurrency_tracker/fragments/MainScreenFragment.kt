@@ -2,6 +2,7 @@ package com.example.cryptocurrency_tracker.fragments
 
 import android.view.View
 import android.os.Bundle
+import android.util.Log
 import androidx.room.Room
 import com.google.gson.Gson
 import android.view.ViewGroup
@@ -45,22 +46,25 @@ class MainScreenFragment : Fragment() {
         val networking = Networking()
 
         if (networking.isNetworkAvailable(context)) {
-            showUIOnline()
+            showUIOnline(true)
         } else {
+            Log.d("NO INTERNET", "WE DONT HAVE INTERNET")
             binding.mainScreenRefresh.visibility = View.VISIBLE
-            showUIOnline()
+            showUIOnline(false)
             binding.mainScreenRefresh.setOnClickListener {
                 if (networking.isNetworkAvailable(context)) {
                     binding.mainScreenRefresh.visibility = View.GONE
-                    showUIOnline()
+                    showUIOnline(true)
                 }
             }
         }
     }
 
-    private fun showUIOnline() {
+    private fun showUIOnline(isOnline:Boolean) {
+        if (isOnline) {
             val data = takeData(Networking(), URL)
             saveDatabase(data)
+        }
             val databaseData = getDatabase()
             if (databaseData != null) {
                 val recyclerViewAdapter = RecyclerViewAdapter(
